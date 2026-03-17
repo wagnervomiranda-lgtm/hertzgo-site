@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HertzGo — Energia que Move Brasília</title>
 <meta name="description" content="Rede de eletropostos DC e AC de alta potência em Brasília. Para motoristas, parceiros e investidores.">
+<meta name="referrer" content="no-referrer-when-downgrade">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -1024,96 +1025,121 @@ footer {
 /* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
-@media (max-width: 960px) {
-  /* NAV */
-  nav { padding: 0 20px; }
-  .nav-links { display: none; }
-  .nav-r { gap: 8px; }
-  .nav-live { display: none; }
-
-  /* HERO */
-  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
-  .hero-slide { position: absolute; inset: 0; }
-  .hero-slide-overlay { position: absolute; inset: 0; }
-  .energy-lines { display: none; }
-
-  /* CONTAINERS */
-  .container { padding: 0 20px; }
-  section { padding: 72px 0; }
-
-  /* GRIDS → 1 coluna */
-  .story-grid,
-  .chargers-grid,
-  .invest-layout,
-  .sobre-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-
-  /* STATIONS */
-  .stations-grid { grid-template-columns: 1fr; }
-
-  /* GALERIA */
-  .gallery-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-  .gg-a, .gg-b, .gg-c, .gg-d {
-    grid-column: span 1 !important;
-    grid-row: span 1 !important;
-    height: 180px;
-  }
-
-  /* BENEFÍCIOS */
-  .benefits { grid-template-columns: 1fr; }
-
-  /* CHARGER SPECS */
-  .charger-specs { order: 2; }
-  .charger-visual { order: 1; height: 240px; }
-
-  /* HOW TO USE 4 passos */
-  div[style*="repeat(4,1fr)"] { grid-template-columns: 1fr 1fr !important; }
-
-  /* INVEST VISUAL */
-  .invest-visual { height: 280px; order: -1; }
-
-  /* SOBRE IMGS */
-  .sobre-imgs {
-    grid-template-columns: 1fr 1fr !important;
-    grid-template-rows: 180px 180px !important;
-  }
-  .sobre-img.tall { grid-row: span 1 !important; }
-
-  /* INTENT GRID */
-  div[style*="repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
-
-  /* CTA */
-  .hero-actions { flex-direction: column; align-items: stretch; }
-  .btn { justify-content: center; }
-
-  /* FOOTER */
-  footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 20px; }
-  .foot-links { flex-wrap: wrap; justify-content: center; }
-
-  /* CURSOR OFF */
-  body { cursor: auto; }
+@media (max-width: 768px) {
+  /* BASE */
+  body { cursor: auto; font-size: 15px; }
   #cur, #aura { display: none; }
 
-  /* SECTION TÍTULOS */
-  .section-h2 { font-size: clamp(32px, 8vw, 48px); }
-  .h2 { font-size: clamp(32px, 8vw, 48px); }
+  /* NAV */
+  nav { padding: 0 16px; height: 52px; }
+  .nav-links, .nav-live { display: none; }
+  .nav-logo img { height: 24px; }
+  .nav-btn, .nav-cta { font-size: 12px; padding: 6px 14px; }
 
-  /* HERO CONTENT */
-  .hero > div[style*="padding"] {
-    padding: calc(var(--nav-h) + 32px) 24px 80px !important;
-  }
+  /* CONTAINERS */
+  .container { padding: 0 16px; }
+  section { padding: 56px 0; }
 
-  /* SPLIT SECTIONS */
+  /* HERO */
+  .hero { min-height: 100svh; }
+  .hero > div[style] { padding: 80px 20px 72px !important; max-width: 100% !important; }
+  .hero-h1 { font-size: clamp(40px, 10vw, 56px) !important; }
+  .hero-sub { font-size: 15px !important; }
+  .hero-actions { flex-direction: column !important; gap: 10px !important; }
+  .hero-actions .btn { width: 100%; justify-content: center; text-align: center; }
+  .scroll-ind { display: none; }
+  .energy-lines { opacity: 0.4; }
+
+  /* SECTION HEADINGS */
+  .section-h2 { font-size: clamp(28px, 7vw, 40px) !important; }
+  .section-desc { font-size: 15px !important; }
+
+  /* STORY GRID */
+  .story-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .story-card { padding: 28px 24px; }
+
+  /* STATIONS */
+  .stations-grid { grid-template-columns: 1fr !important; gap: 10px; }
+  .station-img { height: 200px; }
+
+  /* HOW TO USE — 4 steps */
+  div[style*="repeat(4,1fr)"] { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+
+  /* CHARGERS */
+  .chargers-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .charger-visual { height: 220px !important; order: -1; }
+  .charger-specs { order: 2; }
+  .cs { flex-wrap: wrap; gap: 10px; }
+  .cs-power { min-width: auto; font-size: 22px; }
+
+  /* PARCEIROS */
   div[style*="grid-template-columns:1fr 1fr"][style*="gap:80px"] {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
+    direction: ltr !important;
+  }
+  div[style*="height:560px"] { height: 240px !important; order: -1; }
+
+  /* GALERIA */
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 160px 160px !important;
+    gap: 6px;
+  }
+  .gg-a { grid-column: span 1 !important; grid-row: span 1 !important; }
+  .gg-b { grid-column: span 1 !important; }
+
+  /* INVESTIDORES */
+  .invest-layout { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .invest-visual { height: 240px !important; order: -1; }
+  .invest-pillars { margin-top: 24px; }
+  .pillar { padding: 16px 18px; }
+
+  /* SOBRE */
+  .sobre-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .sobre-imgs {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 160px 160px !important;
+    gap: 6px;
+  }
+  div[style*="grid-row:span 2"] { grid-row: span 1 !important; }
+
+  /* MINI GRID 2 COLUNAS (sobre cards) */
+  div[style*="grid-template-columns:1fr 1fr"][style*="margin-top:36px"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
   }
 
-  /* IMAGENS SPLIT */
-  div[style*="height:560px"], div[style*="height:480px"] {
-    height: 260px !important;
+  /* INTENT GRID (CTA) */
+  div[style*="repeat(3,1fr)"][style*="margin-top:48px"] {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* CTA SECTION */
+  div[style*="max-width:640px"] { padding: 0 !important; }
+  .cta-h2 { font-size: clamp(44px, 12vw, 64px) !important; }
+
+  /* FOOTER */
+  footer {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+    padding: 28px 16px !important;
+  }
+  .foot-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+  .foot-copy { font-size: 10px; }
+
+  /* TICKER */
+  .ticker-wrap { padding: 10px 0; }
+  .tick { font-size: 10px; padding: 0 28px; }
+
+  /* BENEFITS */
+  .benefits { grid-template-columns: 1fr !important; }
+
+  /* PILLAR INVEST */
+  div[style*="flex-direction:column"][style*="border:1px solid var(--border)"][style*="border-radius:16px"] {
+    margin-top: 24px;
   }
 }
 
@@ -1372,9 +1398,9 @@ footer {
 <section class="hero" style="padding:0;border:none;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
 
   <!-- Slideshow de imagens reais -->
-  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/1048/1400/900');background-size:cover;background-position:center;"></div>
-  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/325/1400/900');background-size:cover;background-position:center;"></div>
-  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/1033/1400/900');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=1400&h=900&fit=crop&q=85');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&h=900&fit=crop&q=85');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1400&h=900&fit=crop&q=85');background-size:cover;background-position:center;"></div>
   <div class="hero-slide-overlay"></div>
 
   <!-- Linhas de energia SVG sobre as fotos -->
@@ -1463,7 +1489,7 @@ footer {
     <div class="stations-grid">
       <div class="station-card r">
         <div class="station-img">
-          <img src="https://picsum.photos/id/1036/1200/800" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1647895922877-0b2d09fbc975?w=1200&h=800&fit=crop&q=85" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1479,7 +1505,7 @@ footer {
       </div>
       <div class="station-card r d1">
         <div class="station-img">
-          <img src="https://picsum.photos/id/1043/1200/800" alt="Park Way" crossorigin="anonymous" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1571987502951-3cc342d7c3cf?w=1200&h=800&fit=crop&q=85" alt="Park Way" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1495,7 +1521,7 @@ footer {
       </div>
       <div class="station-card r d2">
         <div class="station-img">
-          <img src="https://picsum.photos/id/1031/1200/800" alt="Cidade do Automóvel" crossorigin="anonymous" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1637084545789-a58d8d8e1d50?w=1200&h=800&fit=crop&q=85" alt="Cidade do Automóvel" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1588,7 +1614,7 @@ footer {
       </div>
       <!-- Imagem -->
       <div class="charger-visual r d1">
-        <img src="https://picsum.photos/id/325/1200/800" alt="Eletroposto DC HertzGo" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&q=85" alt="Eletroposto DC HertzGo" crossorigin="anonymous" loading="lazy">
         <div class="charger-visual-overlay"></div>
         <div style="position:absolute;bottom:24px;left:24px;right:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;">Compatibilidade universal</div>
@@ -1630,7 +1656,7 @@ footer {
         </div>
       </div>
       <div style="position:relative;border-radius:20px;overflow:hidden;height:560px;" class="r d1">
-        <img src="https://picsum.photos/id/1033/1200/800" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.1);">
+        <img src="https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&h=800&fit=crop&q=85" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.1);">
         <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.4),transparent 70%);"></div>
         <div style="position:absolute;top:24px;left:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 18px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">Parceiro ativo</div>
@@ -1646,19 +1672,19 @@ footer {
   <div class="container">
     <div class="gallery-grid r">
       <div class="gg gg-a">
-        <img src="https://picsum.photos/id/1074/1200/800" alt="Carregador" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=1200&h=800&fit=crop&q=85" alt="Carregador" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Eletroposto · Costa Atacadão</div>
       </div>
       <div class="gg gg-b">
-        <img src="https://picsum.photos/id/1048/1200/800" alt="BYDs" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=1200&h=800&fit=crop&q=85" alt="BYDs" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Frota de EVs · Carregando</div>
       </div>
       <div class="gg gg-c">
-        <img src="https://picsum.photos/id/1040/1200/800" alt="Totem 24H" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&q=85" alt="Totem 24H" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Totem · Disponível 24H</div>
       </div>
       <div class="gg gg-d">
-        <img src="https://picsum.photos/id/1060/1200/800" alt="AC Close" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1647895922877-0b2d09fbc975?w=1200&h=800&fit=crop&q=85" alt="AC Close" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">AC 22kW · Close</div>
       </div>
     </div>
@@ -1700,7 +1726,7 @@ footer {
         </div>
       </div>
       <div class="invest-visual r d1">
-        <img src="https://picsum.photos/id/1023/1200/800" alt="HertzGo à noite" crossorigin="anonymous" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&h=800&fit=crop&q=85" alt="HertzGo à noite" crossorigin="anonymous" loading="lazy">
         <div class="invest-visual-overlay"></div>
         <div class="invest-badge">
           <div class="ib-lbl">Operação</div>
@@ -1745,13 +1771,13 @@ footer {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:260px 260px;gap:8px;" class="r d1">
         <div style="border-radius:14px;overflow:hidden;grid-row:span 2;">
-          <img src="https://picsum.photos/id/1043/1200/800" alt="Park Way" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://images.unsplash.com/photo-1571987502951-3cc342d7c3cf?w=1200&h=800&fit=crop&q=85" alt="Park Way" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
         <div style="border-radius:14px;overflow:hidden;">
-          <img src="https://picsum.photos/id/1040/1200/800" alt="Totem 24H" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop&q=85" alt="Totem 24H" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
         <div style="border-radius:14px;overflow:hidden;">
-          <img src="https://picsum.photos/id/1015/1200/800" alt="Mascote Costa" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://images.unsplash.com/photo-1571987502951-3cc342d7c3cf?w=1200&h=800&fit=crop&q=85" alt="Mascote Costa" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
       </div>
     </div>
@@ -1799,7 +1825,7 @@ footer {
 
 <!-- ═══ FOOTER ═══ -->
 <footer>
-  <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/Logo%20Atual.jpeg" alt="HertzGo" crossorigin="anonymous">
+  <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/Logo%20Atual.jpeg" alt="HertzGo" crossorigin="anonymous" style="height:20px;opacity:0.6;">
   <div class="foot-links">
     <a href="#motoristas" class="foot-link">Motoristas</a>
     <a href="#tecnologia" class="foot-link">Tecnologia</a>
