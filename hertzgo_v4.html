@@ -1024,24 +1024,97 @@ footer {
 /* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
-@media (max-width: 900px) {
+@media (max-width: 960px) {
+  /* NAV */
   nav { padding: 0 20px; }
   .nav-links { display: none; }
-  .hero { padding: calc(var(--nav-h) + 40px) 20px 60px; }
-  .hero-stats { gap: 0; }
-  .stat { padding: 0 24px; }
-  .story-grid { grid-template-columns: 1fr; }
-  .kpi-row { grid-template-columns: repeat(2,1fr); }
-  .dash-grid-2 { grid-template-columns: 1fr; }
-  .bento { grid-template-columns: 1fr; }
-  .bc-7,.bc-5,.bc-4,.bc-6,.bc-8,.bc-12 { grid-column: span 1; }
-  .cta-wrap { grid-template-columns: 1fr; }
-  .cta-left { padding: 60px 32px; border-right: none; border-bottom: 1px solid var(--border); }
-  .cta-right { padding: 48px 32px; }
-  footer { flex-direction: column; gap: 20px; text-align: center; }
+  .nav-r { gap: 8px; }
+  .nav-live { display: none; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
+  .hero-slide { position: absolute; inset: 0; }
+  .hero-slide-overlay { position: absolute; inset: 0; }
+  .energy-lines { display: none; }
+
+  /* CONTAINERS */
+  .container { padding: 0 20px; }
+  section { padding: 72px 0; }
+
+  /* GRIDS → 1 coluna */
+  .story-grid,
+  .chargers-grid,
+  .invest-layout,
+  .sobre-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+
+  /* STATIONS */
+  .stations-grid { grid-template-columns: 1fr; }
+
+  /* GALERIA */
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .gg-a, .gg-b, .gg-c, .gg-d {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    height: 180px;
+  }
+
+  /* BENEFÍCIOS */
+  .benefits { grid-template-columns: 1fr; }
+
+  /* CHARGER SPECS */
+  .charger-specs { order: 2; }
+  .charger-visual { order: 1; height: 240px; }
+
+  /* HOW TO USE 4 passos */
+  div[style*="repeat(4,1fr)"] { grid-template-columns: 1fr 1fr !important; }
+
+  /* INVEST VISUAL */
+  .invest-visual { height: 280px; order: -1; }
+
+  /* SOBRE IMGS */
+  .sobre-imgs {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 180px 180px !important;
+  }
+  .sobre-img.tall { grid-row: span 1 !important; }
+
+  /* INTENT GRID */
+  div[style*="repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+
+  /* CTA */
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+
+  /* FOOTER */
+  footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 20px; }
   .foot-links { flex-wrap: wrap; justify-content: center; }
+
+  /* CURSOR OFF */
   body { cursor: auto; }
   #cur, #aura { display: none; }
+
+  /* SECTION TÍTULOS */
+  .section-h2 { font-size: clamp(32px, 8vw, 48px); }
+  .h2 { font-size: clamp(32px, 8vw, 48px); }
+
+  /* HERO CONTENT */
+  .hero > div[style*="padding"] {
+    padding: calc(var(--nav-h) + 32px) 24px 80px !important;
+  }
+
+  /* SPLIT SECTIONS */
+  div[style*="grid-template-columns:1fr 1fr"][style*="gap:80px"] {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  /* IMAGENS SPLIT */
+  div[style*="height:560px"], div[style*="height:480px"] {
+    height: 260px !important;
+  }
 }
 
 
@@ -1299,9 +1372,9 @@ footer {
 <section class="hero" style="padding:0;border:none;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
 
   <!-- Slideshow de imagens reais -->
-  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=1200&q=80&auto=format&fit=crop');background-size:cover;background-position:center;"></div>
-  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop');background-size:cover;background-position:center;"></div>
-  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=1200&q=80&auto=format&fit=crop');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/1048/1400/900');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/325/1400/900');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://picsum.photos/id/1033/1400/900');background-size:cover;background-position:center;"></div>
   <div class="hero-slide-overlay"></div>
 
   <!-- Linhas de energia SVG sobre as fotos -->
@@ -1390,7 +1463,7 @@ footer {
     <div class="stations-grid">
       <div class="station-card r">
         <div class="station-img">
-          <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1200&q=80&auto=format&fit=crop" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy">
+          <img src="https://picsum.photos/id/1036/1200/800" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1406,7 +1479,7 @@ footer {
       </div>
       <div class="station-card r d1">
         <div class="station-img">
-          <img src="https://images.unsplash.com/photo-1571987502951-3cc342d7c3cf?w=1200&q=80&auto=format&fit=crop" alt="Park Way" crossorigin="anonymous" loading="lazy">
+          <img src="https://picsum.photos/id/1043/1200/800" alt="Park Way" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1422,7 +1495,7 @@ footer {
       </div>
       <div class="station-card r d2">
         <div class="station-img">
-          <img src="https://images.unsplash.com/photo-1637084545789-a58d8d8e1d50?w=1200&q=80&auto=format&fit=crop" alt="Cidade do Automóvel" crossorigin="anonymous" loading="lazy">
+          <img src="https://picsum.photos/id/1031/1200/800" alt="Cidade do Automóvel" crossorigin="anonymous" loading="lazy">
           <div class="station-img-overlay"></div>
         </div>
         <div class="station-body">
@@ -1515,7 +1588,7 @@ footer {
       </div>
       <!-- Imagem -->
       <div class="charger-visual r d1">
-        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&auto=format&fit=crop" alt="Eletroposto DC HertzGo" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/325/1200/800" alt="Eletroposto DC HertzGo" crossorigin="anonymous" loading="lazy">
         <div class="charger-visual-overlay"></div>
         <div style="position:absolute;bottom:24px;left:24px;right:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;">Compatibilidade universal</div>
@@ -1557,7 +1630,7 @@ footer {
         </div>
       </div>
       <div style="position:relative;border-radius:20px;overflow:hidden;height:560px;" class="r d1">
-        <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=1200&q=80&auto=format&fit=crop" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.1);">
+        <img src="https://picsum.photos/id/1033/1200/800" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.1);">
         <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.4),transparent 70%);"></div>
         <div style="position:absolute;top:24px;left:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 18px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">Parceiro ativo</div>
@@ -1573,19 +1646,19 @@ footer {
   <div class="container">
     <div class="gallery-grid r">
       <div class="gg gg-a">
-        <img src="https://images.unsplash.com/photo-1647895922877-0b2d09fbc975?w=1200&q=80&auto=format&fit=crop" alt="Carregador" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/1074/1200/800" alt="Carregador" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Eletroposto · Costa Atacadão</div>
       </div>
       <div class="gg gg-b">
-        <img src="https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=1200&q=80&auto=format&fit=crop" alt="BYDs" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/1048/1200/800" alt="BYDs" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Frota de EVs · Carregando</div>
       </div>
       <div class="gg gg-c">
-        <img src="https://images.unsplash.com/photo-1634128221889-82ed6efebfc3?w=1200&q=80&auto=format&fit=crop" alt="Totem 24H" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/1040/1200/800" alt="Totem 24H" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">Totem · Disponível 24H</div>
       </div>
       <div class="gg gg-d">
-        <img src="https://images.unsplash.com/photo-1651949431150-9e09e6c59a33?w=1200&q=80&auto=format&fit=crop" alt="AC Close" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/1060/1200/800" alt="AC Close" crossorigin="anonymous" loading="lazy">
         <div class="gg-cap">AC 22kW · Close</div>
       </div>
     </div>
@@ -1627,7 +1700,7 @@ footer {
         </div>
       </div>
       <div class="invest-visual r d1">
-        <img src="https://images.unsplash.com/photo-1620735692151-26a7e0748429?w=1200&q=80&auto=format&fit=crop" alt="HertzGo à noite" crossorigin="anonymous" loading="lazy">
+        <img src="https://picsum.photos/id/1023/1200/800" alt="HertzGo à noite" crossorigin="anonymous" loading="lazy">
         <div class="invest-visual-overlay"></div>
         <div class="invest-badge">
           <div class="ib-lbl">Operação</div>
@@ -1672,13 +1745,13 @@ footer {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:260px 260px;gap:8px;" class="r d1">
         <div style="border-radius:14px;overflow:hidden;grid-row:span 2;">
-          <img src="https://images.unsplash.com/photo-1571987502951-3cc342d7c3cf?w=1200&q=80&auto=format&fit=crop" alt="Park Way" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://picsum.photos/id/1043/1200/800" alt="Park Way" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
         <div style="border-radius:14px;overflow:hidden;">
-          <img src="https://images.unsplash.com/photo-1634128221889-82ed6efebfc3?w=1200&q=80&auto=format&fit=crop" alt="Totem 24H" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://picsum.photos/id/1040/1200/800" alt="Totem 24H" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
         <div style="border-radius:14px;overflow:hidden;">
-          <img src="https://images.unsplash.com/photo-1562237585-1a7a9a0e3a9b?w=1200&q=80&auto=format&fit=crop" alt="Mascote Costa" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+          <img src="https://picsum.photos/id/1015/1200/800" alt="Mascote Costa" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
         </div>
       </div>
     </div>
