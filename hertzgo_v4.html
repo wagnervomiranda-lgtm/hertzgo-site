@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HertzGo — Energia que Move Brasília</title>
+<meta name="description" content="Rede de eletropostos DC e AC de alta potência em Brasília. Para motoristas, parceiros e investidores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS — Paleta técnica rigorosa
+   Inspiração: Linear, Vercel, Apple
+═══════════════════════════════════════════════ */
+:root {
+  /* Neutros */
+  --black: #000000;
+  --gray-950: #0a0a0a;
+  --gray-900: #111111;
+  --gray-800: #1c1c1c;
+  --gray-700: #2a2a2a;
+  --gray-600: #3f3f3f;
+  --gray-500: #737373;
+  --gray-400: #a3a3a3;
+  --gray-300: #d4d4d4;
+  --gray-100: #f5f5f5;
+  --white: #ffffff;
+
+  /* Accent primário — Verde elétrico */
+  --accent: #22c55e;
+  --accent-light: rgba(34,197,94,.12);
+  --accent-border: rgba(34,197,94,.2);
+  --accent-glow: rgba(34,197,94,.35);
+
+  /* Accent secundário — Azul tecnologia */
+  --blue: #3b82f6;
+  --blue-light: rgba(59,130,246,.1);
+
+  /* Superfícies */
+  --surface-1: var(--gray-950);
+  --surface-2: var(--gray-900);
+  --surface-3: var(--gray-800);
+
+  /* Bordas */
+  --border: rgba(255,255,255,.07);
+  --border-hover: rgba(255,255,255,.14);
+  --border-accent: var(--accent-border);
+
+  /* Tipografia */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+
+  /* Espaçamentos */
+  --nav-h: 60px;
+
+  /* Easing */
+  --ease: cubic-bezier(.16,1,.3,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ═══════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--black);
+  color: var(--gray-100);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* ═══════════════════════════════════════════════
+   CURSOR MAGNÉTICO — assinatura visual
+═══════════════════════════════════════════════ */
+#cur {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s var(--ease-spring), height .2s var(--ease-spring);
+  mix-blend-mode: difference;
+}
+#aura {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(34,197,94,.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all .18s var(--ease);
+}
+
+/* ═══════════════════════════════════════════════
+   NAVBAR — Apple-style frosted glass
+═══════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  transition: background .3s;
+}
+.nav-logo img { height: 28px; display: block; }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 auto;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 3px;
+}
+.nav-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-400);
+  text-decoration: none;
+  padding: 6px 16px;
+  border-radius: 100px;
+  letter-spacing: -.01em;
+  transition: all .2s;
+}
+.nav-link:hover { color: var(--white); background: var(--surface-3); }
+.nav-actions { display: flex; gap: 10px; align-items: center; }
+.nav-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: .04em;
+  padding: 5px 12px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  border-radius: 100px;
+}
+.badge-dot {
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: ping 1.5s ease-in-out infinite;
+}
+@keyframes ping {
+  0%,100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { opacity: .7; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+}
+.nav-cta {
+  font-size: 13px; font-weight: 600;
+  color: var(--black);
+  background: var(--white);
+  padding: 7px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all .2s;
+}
+.nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════
+   HERO — Imersivo com WebGL simulado
+═══════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: calc(var(--nav-h) + 60px) 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fundo grade */
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 75% at 50% 50%, black 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Canvas WebGL simulado com SVG + CSS */
+.webgl-canvas {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.webgl-canvas canvas {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+/* Orbes de energia */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+}
+.orb-1 {
+  width: 3px; height: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 20px 8px rgba(34,197,94,.4);
+  top: 50%; left: 50%;
+  animation: orb1 8s ease-in-out infinite;
+}
+.orb-2 {
+  width: 2px; height: 2px;
+  background: var(--blue);
+  box-shadow: 0 0 14px 5px rgba(59,130,246,.4);
+  top: 30%; left: 25%;
+  animation: orb2 10s ease-in-out infinite;
+}
+.orb-3 {
+  width: 2px; height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 14px 5px rgba(34,197,94,.3);
+  top: 60%; left: 75%;
+  animation: orb3 12s ease-in-out infinite;
+}
+@keyframes orb1 {
+  0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .8; }
+  33% { transform: translate(calc(-50% + 120px), calc(-50% - 80px)) scale(1.4); opacity: 1; }
+  66% { transform: translate(calc(-50% - 80px), calc(-50% + 60px)) scale(.8); opacity: .6; }
+}
+@keyframes orb2 {
+  0%,100% { transform: translate(0,0); opacity: .5; }
+  50% { transform: translate(80px, 120px); opacity: .9; }
+}
+@keyframes orb3 {
+  0%,100% { transform: translate(0,0); opacity: .4; }
+  50% { transform: translate(-100px, -80px); opacity: .8; }
+}
+
+/* Glow central do hero */
+.hero-glow {
+  position: absolute;
+  width: 800px; height: 800px;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(circle at center,
+    rgba(34,197,94,.05) 0%,
+    rgba(34,197,94,.02) 30%,
+    transparent 70%);
+  pointer-events: none;
+  animation: glowBreath 4s ease-in-out infinite;
+}
+@keyframes glowBreath {
+  0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .8; }
+  50% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; }
+}
+
+/* Linhas de energia SVG */
+.energy-lines {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.energy-lines svg { width: 100%; height: 100%; }
+
+.hero-content { position: relative; z-index: 10; max-width: 900px; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gray-500);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeUp .9s .1s both;
+}
+
+.hero-h1 {
+  font-size: clamp(52px,9vw,104px);
+  font-weight: 800;
+  letter-spacing: -.05em;
+  line-height: .92;
+  margin-bottom: 28px;
+  animation: fadeUp .9s .2s both;
+}
+.hero-h1 .accent {
+  background: linear-gradient(135deg, var(--accent) 0%, #86efac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-h1 .dim { color: var(--gray-600); font-weight: 300; }
+
+.hero-sub {
+  font-size: clamp(15px,1.8vw,18px);
+  color: var(--gray-400);
+  max-width: 560px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  font-weight: 400;
+  animation: fadeUp .9s .35s both;
+}
+
+.hero-actions {
+  display: flex; gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp .9s .5s both;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none;
+  padding: 13px 26px;
+  border-radius: 10px;
+  transition: all .2s var(--ease-spring);
+  cursor: none;
+}
+.btn-filled {
+  background: var(--white);
+  color: var(--black);
+}
+.btn-filled:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(34,197,94,.25);
+}
+.btn-ghost {
+  background: rgba(255,255,255,.05);
+  color: var(--gray-100);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,.09);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+/* Stats no hero */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  animation: fadeUp .9s .65s both;
+  justify-content: center;
+}
+.stat {
+  padding: 0 48px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-val {
+  font-family: var(--mono);
+  font-size: clamp(22px,3vw,32px);
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--gray-500);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  font-family: var(--mono);
+}
+
+/* Scroll indicator */
+.scroll-ind {
+  position: absolute;
+  bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  animation: fadeUp .9s .8s both;
+}
+.scroll-ind-line {
+  width: 1px; height: 52px;
+  background: linear-gradient(180deg, var(--gray-600) 0%, transparent 100%);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%,100% { transform: scaleY(1); opacity: .5; }
+  50% { transform: scaleY(1.3); opacity: 1; }
+}
+.scroll-ind span {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gray-600);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════════
+   TICKER — Dados em movimento
+═══════════════════════════════════════════════ */
+.ticker-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.015);
+  padding: 12px 0;
+  overflow: hidden;
+}
+.ticker {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 28s linear infinite;
+}
+.ticker:hover { animation-play-state: paused; }
+.tick {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 40px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray-600);
+  letter-spacing: .06em;
+}
+.tick strong { color: var(--accent); font-weight: 500; }
+.tick-sep { color: var(--gray-700); }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════
+   SEÇÕES
+═══════════════════════════════════════════════ */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+section { padding: 120px 0; }
+section + section { border-top: 1px solid var(--border); }
+
+.section-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gray-500);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.section-badge::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--gray-700);
+}
+
+.section-h2 {
+  font-size: clamp(36px,5vw,60px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.section-h2 em { color: var(--accent); font-style: normal; }
+.section-h2 .dim { color: var(--gray-600); font-weight: 300; }
+
+.section-desc {
+  font-size: 17px;
+  color: var(--gray-400);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+/* ═══════════════════════════════════════════════
+   STORYTELLING — DO PROBLEMA À SOLUÇÃO
+═══════════════════════════════════════════════ */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.story-card {
+  background: var(--surface-1);
+  padding: 40px 36px;
+  position: relative;
+  transition: background .2s;
+}
+.story-card:hover { background: var(--surface-2); }
+.story-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 0;
+}
+.story-card.problem::before { background: rgba(239,68,68,.5); }
+.story-card.bridge::before { background: linear-gradient(90deg, rgba(239,68,68,.3), var(--accent)); }
+.story-card.solution::before { background: var(--accent); }
+.story-num {
+  font-family: var(--mono);
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(255,255,255,.04);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+.story-icon { font-size: 28px; margin-bottom: 16px; }
+.story-title { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+.story-card.problem .story-title { color: #f87171; }
+.story-card.solution .story-title { color: var(--accent); }
+.story-body {
+  font-size: 14px;
+  color: var(--gray-400);
+  line-height: 1.6;
+  font-family: var(--mono);
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD — Progressive Disclosure
+═══════════════════════════════════════════════ */
+.dash-outer {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.04);
+}
+.dash-titlebar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+.tbar-dots { display: flex; gap: 7px; }
+.tbar-dot { width: 11px; height: 11px; border-radius: 50%; }
+.tbar-dot.r { background: #ff5f57; }
+.tbar-dot.y { background: #febc2e; }
+.tbar-dot.g { background: #28c840; }
+.tbar-title {
+  flex: 1; text-align: center;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--gray-500); letter-spacing: .06em;
+}
+.dash-nav {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  background: rgba(0,0,0,.3);
+  overflow-x: auto;
+}
+.dash-tab {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--gray-500);
+  padding: 12px 16px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+  letter-spacing: .04em;
+}
+.dash-tab:hover { color: var(--gray-300); }
+.dash-tab.on { color: var(--white); border-bottom-color: var(--accent); }
+
+.dash-body { padding: 24px; }
+
+/* KPIs */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.kpi {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color .2s, transform .2s;
+}
+.kpi:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+.kpi::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+}
+.kpi-tag {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 10px;
+}
+.kpi-val {
+  font-family: var(--mono); font-size: 24px; font-weight: 500;
+  line-height: 1; margin-bottom: 4px;
+}
+.kpi-val.g { color: var(--accent); }
+.kpi-val.b { color: var(--blue); }
+.kpi-val.a { color: #f59e0b; }
+.kpi-sub { font-family: var(--mono); font-size: 10px; color: var(--gray-500); }
+
+/* Gráfico de barras */
+.chart-wrap {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.chart-label {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 16px;
+}
+.bars-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+}
+.bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: rgba(34,197,94,.12);
+  transition: all .3s var(--ease);
+  min-height: 4px;
+  position: relative;
+  cursor: pointer;
+}
+.bar:hover { background: rgba(34,197,94,.35); }
+.bar.peak { background: rgba(34,197,94,.55); }
+.bar-tip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: var(--mono); font-size: 10px; color: var(--white);
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.bar:hover .bar-tip { opacity: 1; }
+
+/* Grid inferior dashboard */
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.dash-card {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.dc-title {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 16px;
+}
+/* Mapa estilizado */
+.map-area {
+  height: 160px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.map-area::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 40% 55%, rgba(34,197,94,.07) 0%, transparent 40%),
+    radial-gradient(circle at 65% 38%, rgba(59,130,246,.05) 0%, transparent 40%),
+    repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,.02) 24px, rgba(255,255,255,.02) 25px),
+    repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,.02) 24px, rgba(255,255,255,.02) 25px);
+}
+.map-pin {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(34,197,94,.15), 0 0 14px rgba(34,197,94,.5);
+  animation: pinPulse 2.2s ease-in-out infinite;
+}
+@keyframes pinPulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,.12), 0 0 14px rgba(34,197,94,.4); }
+  50% { box-shadow: 0 0 0 8px rgba(34,197,94,.04), 0 0 22px rgba(34,197,94,.6); }
+}
+/* Log de automação */
+.log-list { display: flex; flex-direction: column; gap: 0; }
+.log-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.log-item:last-child { border-bottom: none; }
+.log-icon {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0;
+}
+.log-icon.ok { background: rgba(34,197,94,.12); }
+.log-icon.run { background: rgba(59,130,246,.12); }
+.log-text {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--gray-400); flex: 1;
+}
+.log-time {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--gray-600);
+}
+
+/* ═══════════════════════════════════════════════
+   BENTO GRID — Personalizado por perfil
+═══════════════════════════════════════════════ */
+.profile-tabs {
+  display: flex; gap: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  width: fit-content;
+  margin-bottom: 32px;
+}
+.ptab {
+  font-size: 13px; font-weight: 500;
+  color: var(--gray-500);
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none; background: transparent;
+  cursor: none;
+  transition: all .2s;
+  letter-spacing: -.01em;
+}
+.ptab:hover { color: var(--gray-300); }
+.ptab.on {
+  background: var(--surface-3);
+  color: var(--white);
+  box-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+}
+.bc {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .25s var(--ease), transform .25s var(--ease);
+  cursor: default;
+}
+.bc::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  opacity: 0; transition: opacity .3s;
+}
+.bc:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.bc:hover::before { opacity: 1; }
+
+/* Spans */
+.bc-7 { grid-column: span 7; }
+.bc-5 { grid-column: span 5; }
+.bc-4 { grid-column: span 4; }
+.bc-6 { grid-column: span 6; }
+.bc-8 { grid-column: span 8; }
+.bc-12 { grid-column: span 12; }
+
+/* Variantes */
+.bc-accent {
+  background: linear-gradient(135deg, rgba(34,197,94,.08) 0%, rgba(34,197,94,.03) 100%);
+  border-color: var(--accent-border);
+}
+.bc-blue {
+  background: rgba(59,130,246,.05);
+  border-color: rgba(59,130,246,.15);
+}
+
+.bc-tag {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: .14em;
+  margin-bottom: 16px;
+}
+.bc-num {
+  font-family: var(--mono);
+  font-size: clamp(36px,4.5vw,56px);
+  font-weight: 500;
+  line-height: 1; letter-spacing: -.03em;
+  margin-bottom: 6px;
+}
+.bc-num.g { color: var(--accent); }
+.bc-num.b { color: var(--blue); }
+.bc-num.w { color: var(--gray-300); }
+.bc-desc { font-size: 13px; color: var(--gray-400); line-height: 1.6; font-family: var(--mono); margin-top: 10px; }
+.bc-sub { font-family: var(--mono); font-size: 10px; color: var(--gray-500); margin-top: 6px; }
+
+/* Mini bars */
+.mbars {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 36px; margin-top: 16px;
+}
+.mb {
+  flex: 1; border-radius: 2px 2px 0 0;
+  background: rgba(34,197,94,.1);
+  transition: background .2s; min-height: 3px;
+}
+.mb.hi { background: var(--accent); }
+.bc:hover .mb { background: rgba(34,197,94,.2); }
+.bc:hover .mb.hi { background: #4ade80; }
+
+/* Progress bar */
+.pbar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 16px; }
+.pbar-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--blue));
+  transition: width 1.6s var(--ease);
+}
+
+/* Estações */
+.stations { margin-top: 14px; }
+.st-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.st-row:last-child { border-bottom: none; }
+.st-left { display: flex; align-items: center; gap: 10px; }
+.st-dot {
+  width: 6px; height: 6px;
+  background: var(--accent); border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent);
+  animation: ping 2s infinite;
+}
+.st-name { font-size: 13px; font-weight: 500; }
+.st-addr { font-family: var(--mono); font-size: 10px; color: var(--gray-500); margin-top: 1px; }
+.st-kpi { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+
+/* Steps */
+.steps-list { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.step { display: flex; gap: 14px; }
+.step-n { font-family: var(--mono); font-size: 11px; color: var(--gray-600); min-width: 18px; margin-top: 1px; }
+.step-t { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+.step-t b { color: var(--gray-100); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+   CTA FINAL — Split layout imersivo
+═══════════════════════════════════════════════ */
+.cta-section {
+  border-top: 1px solid var(--border);
+  padding: 0;
+}
+.cta-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 560px;
+}
+.cta-left {
+  padding: 80px 72px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-left::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(34,197,94,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-eyebrow {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--gray-600);
+  letter-spacing: .2em; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.cta-h2 {
+  font-size: clamp(40px,5vw,64px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.0;
+  margin-bottom: 20px;
+}
+.cta-h2 em { color: var(--accent); font-style: normal; }
+.cta-p {
+  font-size: 16px;
+  color: var(--gray-400);
+  line-height: 1.7;
+  max-width: 400px;
+  margin-bottom: 40px;
+}
+.cta-contact {
+  font-family: var(--mono);
+  font-size: clamp(22px,3vw,32px);
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 6px;
+  letter-spacing: -.02em;
+}
+.cta-contact-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray-500);
+  letter-spacing: .08em;
+  margin-bottom: 36px;
+}
+.cta-right {
+  padding: 80px 64px;
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 12px;
+}
+.cta-card {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  text-decoration: none;
+  transition: all .2s var(--ease);
+  cursor: none;
+}
+.cta-card:hover {
+  border-color: var(--accent-border);
+  background: rgba(34,197,94,.04);
+  transform: translateX(6px);
+}
+.cta-card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cci-g { background: var(--accent-light); }
+.cci-b { background: var(--blue-light); }
+.cci-w { background: rgba(255,255,255,.05); }
+.cta-card-text { flex: 1; }
+.cct-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.cct-sub { font-family: var(--mono); font-size: 11px; color: var(--gray-500); }
+.cct-arrow { color: var(--gray-600); font-size: 14px; transition: all .2s; }
+.cta-card:hover .cct-arrow { transform: translateX(4px); color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+.foot-logo img { height: 22px; display: block; }
+.foot-links {
+  display: flex; gap: 24px;
+}
+.foot-link {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--gray-600); text-decoration: none;
+  letter-spacing: .04em;
+  transition: color .2s;
+}
+.foot-link:hover { color: var(--gray-300); }
+.foot-copy {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--gray-700); letter-spacing: .04em;
+}
+
+/* ═══════════════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.r {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .65s var(--ease), transform .65s var(--ease);
+}
+.r.in { opacity: 1; transform: translateY(0); }
+.r.d1 { transition-delay: .07s; }
+.r.d2 { transition-delay: .14s; }
+.r.d3 { transition-delay: .21s; }
+.r.d4 { transition-delay: .28s; }
+.r.d5 { transition-delay: .35s; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero { padding: calc(var(--nav-h) + 40px) 20px 60px; }
+  .hero-stats { gap: 0; }
+  .stat { padding: 0 24px; }
+  .story-grid { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .dash-grid-2 { grid-template-columns: 1fr; }
+  .bento { grid-template-columns: 1fr; }
+  .bc-7,.bc-5,.bc-4,.bc-6,.bc-8,.bc-12 { grid-column: span 1; }
+  .cta-wrap { grid-template-columns: 1fr; }
+  .cta-left { padding: 60px 32px; border-right: none; border-bottom: 1px solid var(--border); }
+  .cta-right { padding: 48px 32px; }
+  footer { flex-direction: column; gap: 20px; text-align: center; }
+  .foot-links { flex-wrap: wrap; justify-content: center; }
+  body { cursor: auto; }
+  #cur, #aura { display: none; }
+}
+
+
+/* ═══ EXTRAS v2 ═══ */
+
+/* ── IMAGEM HERO SLIDESHOW ── */
+.hero-slide {
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:0;
+  transition:opacity 1.4s ease;
+}
+.hero-slide.active { opacity:1; }
+.hero-slide-overlay {
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 80% at 30% 50%,rgba(0,0,0,.65) 0%,rgba(0,0,0,.2) 100%);
+}
+
+/* ── SEÇÃO ESTAÇÕES ── */
+.stations-section { padding:120px 0;border-top:1px solid var(--border); }
+.stations-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:56px;
+}
+.station-card {
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  transition:border-color .3s var(--ease),transform .3s var(--ease);
+  cursor:none;
+}
+.station-card:hover { border-color:var(--border-hover);transform:translateY(-4px); }
+.station-img {
+  height:220px;
+  overflow:hidden;
+  position:relative;
+}
+.station-img img {
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.75) saturate(1.1);
+  transition:transform 5s ease,filter .4s;
+}
+.station-card:hover .station-img img { transform:scale(1.06);filter:brightness(.9) saturate(1.2); }
+.station-img-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.7) 0%,transparent 60%);
+}
+.station-body { padding:24px; }
+.station-name { font-size:16px;font-weight:700;margin-bottom:4px; }
+.station-addr { font-family:var(--mono);font-size:11px;color:var(--gray-500);margin-bottom:16px; }
+.station-specs { display:flex;flex-wrap:wrap;gap:6px; }
+.station-spec {
+  font-family:var(--mono);font-size:10px;
+  padding:4px 10px;border-radius:6px;
+  border:1px solid;
+  letter-spacing:.04em;
+}
+.station-spec.dc { color:var(--accent);border-color:var(--accent-border);background:var(--accent-light); }
+.station-spec.ac { color:var(--blue);border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.08); }
+.station-live {
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:10px;
+  color:var(--accent);margin-bottom:12px;
+}
+.station-live-dot {
+  width:5px;height:5px;background:var(--accent);border-radius:50%;
+  box-shadow:0 0 6px var(--accent);
+  animation:ping 2s infinite;
+}
+
+/* ── SEÇÃO TECNOLOGIA / CHARGERS ── */
+.chargers-section { padding:120px 0;border-top:1px solid var(--border); }
+.chargers-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:56px;
+  align-items:center;
+  margin-top:56px;
+}
+.charger-visual {
+  position:relative;
+  border-radius:20px;overflow:hidden;
+  height:520px;
+}
+.charger-visual img {
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.75) saturate(1.1);
+}
+.charger-visual-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,0,0,.5),transparent 60%);
+}
+.charger-specs { display:flex;flex-direction:column;gap:8px; }
+.cs {
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:14px;padding:20px 24px;
+  display:flex;align-items:center;gap:20px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s;
+  cursor:none;
+}
+.cs:hover { transform:translateX(6px); }
+.cs::before {
+  content:'';position:absolute;
+  left:0;top:0;bottom:0;width:2px;
+}
+.cs.dc::before { background:var(--accent); }
+.cs.ac::before { background:var(--blue); }
+.cs:hover.dc { border-color:var(--accent-border); }
+.cs:hover.ac { border-color:rgba(59,130,246,.2); }
+.cs-badge {
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 10px;border-radius:6px;border:1px solid;
+  flex-shrink:0;
+}
+.cs.dc .cs-badge { color:var(--accent);border-color:var(--accent-border);background:var(--accent-light); }
+.cs.ac .cs-badge { color:var(--blue);border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.08); }
+.cs-power {
+  font-family:var(--mono);font-size:26px;font-weight:500;
+  line-height:1;flex-shrink:0;min-width:80px;
+}
+.cs.dc .cs-power { color:var(--accent); }
+.cs.ac .cs-power { color:var(--blue); }
+.cs-info { flex:1; }
+.cs-title { font-size:14px;font-weight:600;margin-bottom:3px; }
+.cs-desc { font-size:12px;color:var(--gray-500);font-family:var(--mono);line-height:1.5; }
+.cs-compat { font-family:var(--mono);font-size:10px;color:var(--gray-600);margin-top:4px; }
+
+/* ── GALERIA ── */
+.gallery-section { padding:120px 0;border-top:1px solid var(--border); }
+.gallery-grid {
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-template-rows:260px 260px;
+  gap:8px;
+  margin-top:56px;
+}
+.gg { border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2); }
+.gg img { width:100%;height:100%;object-fit:cover;filter:brightness(.75);transition:transform 5s ease,filter .4s; }
+.gg:hover img { transform:scale(1.07);filter:brightness(.9); }
+.gg:hover .gg-cap { opacity:1;transform:translateY(0); }
+.gg-cap {
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px;
+  background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);
+  font-family:var(--mono);font-size:10px;color:var(--gray-400);
+  letter-spacing:.1em;text-transform:uppercase;
+  opacity:0;transform:translateY(8px);
+  transition:all .3s var(--ease);
+}
+.gg-a { grid-column:span 5;grid-row:span 2; }
+.gg-b { grid-column:span 7;grid-row:span 1; }
+.gg-c { grid-column:span 4;grid-row:span 1; }
+.gg-d { grid-column:span 3;grid-row:span 1; }
+
+/* ── SEÇÃO INVESTIDOR VELADA ── */
+.invest-section {
+  padding:120px 0;border-top:1px solid var(--border);
+  background:var(--surface-1);position:relative;overflow:hidden;
+}
+.invest-section::before {
+  content:'';position:absolute;
+  top:-200px;right:-200px;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(34,197,94,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.invest-layout {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:72px;align-items:center;
+}
+.invest-pillars {
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid var(--border);border-radius:16px;overflow:hidden;
+  margin-top:36px;
+}
+.pillar {
+  display:flex;align-items:flex-start;gap:18px;
+  padding:22px 24px;border-bottom:1px solid var(--border);
+  transition:background .2s;cursor:none;
+}
+.pillar:last-child { border-bottom:none; }
+.pillar:hover { background:var(--surface-2); }
+.pillar-icon {
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;background:var(--accent-light);
+}
+.pillar-title { font-size:14px;font-weight:600;margin-bottom:3px; }
+.pillar-desc { font-size:12px;color:var(--gray-500);font-family:var(--mono);line-height:1.5; }
+.invest-visual {
+  position:relative;border-radius:20px;overflow:hidden;height:500px;
+}
+.invest-visual img {
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(.65) saturate(1.1);
+}
+.invest-visual-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,0,0,.5),transparent 70%);
+}
+.invest-badge {
+  position:absolute;top:24px;left:24px;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(16px);
+  border:1px solid var(--border-hover);border-radius:10px;
+  padding:14px 18px;
+}
+.ib-lbl { font-family:var(--mono);font-size:9px;color:var(--gray-600);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px; }
+.ib-val { font-size:15px;font-weight:600;color:var(--accent); }
+
+/* Ajuste bento: remover numeros, adicionar narrativa */
+.bc-narrative {
+  font-size:15px;color:var(--gray-300);line-height:1.65;
+  margin-top:12px;font-weight:400;
+}
+
+/* Responsive extras */
+@media(max-width:900px) {
+  .stations-grid { grid-template-columns:1fr; }
+  .chargers-grid { grid-template-columns:1fr; }
+  .invest-layout { grid-template-columns:1fr; }
+  .gallery-grid { grid-template-columns:1fr 1fr;grid-template-rows:auto; }
+  .gg-a,.gg-b,.gg-c,.gg-d { grid-column:span 1;height:200px;grid-row:span 1; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="aura"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/Logo%20Atual.jpeg" alt="HertzGo" crossorigin="anonymous"></a>
+  <div class="nav-links">
+    <a href="#motoristas" class="nav-link">Motoristas</a>
+    <a href="#parceiros" class="nav-link">Parceiros</a>
+    <a href="#tecnologia" class="nav-link">Tecnologia</a>
+    <a href="#investidores" class="nav-link">Investidores</a>
+    <a href="#sobre" class="nav-link">Sobre</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-badge"><div class="badge-dot"></div>Brasília · Ao vivo</div>
+    <a href="https://hertzgo-vision.vercel.app" target="_blank" class="nav-cta">Dashboard →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" style="padding:0;border:none;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
+
+  <!-- Slideshow de imagens reais -->
+  <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/byds_fila.jpg');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/dc80kw_cobertura_azul.jpg');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/costa_noite_amplo.jpg');background-size:cover;background-position:center;"></div>
+  <div class="hero-slide-overlay"></div>
+
+  <!-- Linhas de energia SVG sobre as fotos -->
+  <div class="energy-lines" style="z-index:2;">
+    <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <filter id="f1"><feGaussianBlur stdDeviation="2.5"/></filter>
+        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#22c55e" stop-opacity=".45"/>
+          <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#22c55e" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M700,450 C600,350 400,280 150,200" stroke="url(#lg1)" stroke-width="1.2" fill="none"><animate attributeName="opacity" values=".2;.7;.2" dur="4s" repeatCount="indefinite"/></path>
+      <path d="M700,450 C800,320 1000,260 1280,190" stroke="url(#lg1)" stroke-width="1.2" fill="none"><animate attributeName="opacity" values=".1;.6;.1" dur="4.5s" begin=".8s" repeatCount="indefinite"/></path>
+      <path d="M700,450 C550,520 350,580 100,680" stroke="url(#lg2)" stroke-width="1" fill="none"><animate attributeName="opacity" values=".1;.4;.1" dur="5s" begin="1.5s" repeatCount="indefinite"/></path>
+      <path d="M700,450 C900,540 1080,600 1320,720" stroke="url(#lg2)" stroke-width="1" fill="none"><animate attributeName="opacity" values=".1;.4;.1" dur="4.8s" begin=".5s" repeatCount="indefinite"/></path>
+      <circle cx="700" cy="450" r="6" fill="none" stroke="#22c55e" stroke-width="1" opacity=".35"><animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="3s" repeatCount="indefinite"/></circle>
+      <circle cx="700" cy="450" r="3" fill="#22c55e" opacity=".8"><animate attributeName="opacity" values=".6;1;.6" dur="2s" repeatCount="indefinite"/></circle>
+      <circle r="2.5" fill="#22c55e" filter="url(#f1)"><animateMotion dur="4s" repeatCount="indefinite" path="M700,450 C600,350 400,280 150,200"/></circle>
+      <circle r="2" fill="#38bdf8" filter="url(#f1)"><animateMotion dur="4.5s" repeatCount="indefinite" begin=".8s" path="M700,450 C800,320 1000,260 1280,190"/></circle>
+      <circle r="1.8" fill="#22c55e" filter="url(#f1)"><animateMotion dur="5s" repeatCount="indefinite" begin="1.5s" path="M700,450 C550,520 350,580 100,680"/></circle>
+    </svg>
+  </div>
+
+  <!-- Conteúdo hero -->
+  <div style="position:relative;z-index:10;padding:calc(var(--nav-h)+48px) 48px 96px;max-width:760px;">
+    <div class="hero-eyebrow" style="animation:fadeUp .9s .1s both;">
+      <span style="width:5px;height:5px;background:var(--accent);border-radius:50%;"></span>
+      Rede de eletropostos · Brasília · DF
+    </div>
+    <h1 class="hero-h1" style="animation:fadeUp .9s .2s both;">
+      <span class="accent">A energia</span><br>
+      que move<br>
+      Brasília.
+    </h1>
+    <p class="hero-sub" style="animation:fadeUp .9s .35s both;">
+      Eletropostos DC e AC de alta potência onde você já está. Tecnologia de ponta, gestão automatizada e presença estratégica nos melhores pontos da capital.
+    </p>
+    <div class="hero-actions" style="animation:fadeUp .9s .5s both;justify-content:flex-start;">
+      <a href="#motoristas" class="btn btn-filled">🔌 Onde carregar</a>
+      <a href="#investidores" class="btn btn-outline">Saiba mais →</a>
+    </div>
+  </div>
+  <div class="scroll-ind" style="left:48px;transform:none;z-index:10;">
+    <div class="scroll-ind-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="tick"><strong>DC 30kW – 120kW</strong><span class="tick-sep">·</span>carregamento rápido</div>
+    <div class="tick"><strong>AC 11kW + 22kW</strong><span class="tick-sep">·</span>recarga inteligente</div>
+    <div class="tick"><strong>5 estações ativas</strong><span class="tick-sep">·</span>Brasília · DF</div>
+    <div class="tick"><strong>100% dos dias</strong><span class="tick-sep">·</span>operação ininterrupta</div>
+    <div class="tick"><strong>24/7</strong><span class="tick-sep">·</span>monitoramento contínuo</div>
+    <div class="tick"><strong>CRM automatizado</strong><span class="tick-sep">·</span>gestão inteligente</div>
+    <div class="tick"><strong>Spott + Move</strong><span class="tick-sep">·</span>plataformas integradas</div>
+    <div class="tick"><strong>DC 30kW – 120kW</strong><span class="tick-sep">·</span>carregamento rápido</div>
+    <div class="tick"><strong>AC 11kW + 22kW</strong><span class="tick-sep">·</span>recarga inteligente</div>
+    <div class="tick"><strong>5 estações ativas</strong><span class="tick-sep">·</span>Brasília · DF</div>
+    <div class="tick"><strong>100% dos dias</strong><span class="tick-sep">·</span>operação ininterrupta</div>
+    <div class="tick"><strong>24/7</strong><span class="tick-sep">·</span>monitoramento contínuo</div>
+    <div class="tick"><strong>CRM automatizado</strong><span class="tick-sep">·</span>gestão inteligente</div>
+    <div class="tick"><strong>Spott + Move</strong><span class="tick-sep">·</span>plataformas integradas</div>
+  </div>
+</div>
+
+<!-- ═══ MOTORISTAS ═══ -->
+<section id="motoristas">
+  <div class="container">
+    <div class="r" style="text-align:center;margin-bottom:64px;">
+      <div class="section-badge">Para motoristas EV</div>
+      <h2 class="section-h2">Chegou. Conectou.<br><em>Carregou.</em></h2>
+      <p class="section-desc" style="margin:20px auto 0;">Nossos eletropostos estão onde a sua vida já acontece. Você faz suas compras, almoça, treina — e o carro carrega. Sem desvios, sem perda de tempo, sem complicação.</p>
+    </div>
+
+    <!-- Estações -->
+    <div class="stations-grid">
+      <div class="station-card r">
+        <div class="station-img">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/banner_costa_fachada.jpg" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy">
+          <div class="station-img-overlay"></div>
+        </div>
+        <div class="station-body">
+          <div class="station-live"><div class="station-live-dot"></div>Ativo agora</div>
+          <div class="station-name">Costa Atacadão</div>
+          <div class="station-addr">Águas Claras · Brasília · DF</div>
+          <div class="station-specs">
+            <span class="station-spec dc">DC 60kW</span>
+            <span class="station-spec ac">AC 22kW</span>
+            <span class="station-spec dc">Plug CCS · CHAdeMO · J1772</span>
+          </div>
+        </div>
+      </div>
+      <div class="station-card r d1">
+        <div class="station-img">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/mascote_parkway.jpg" alt="Park Way" crossorigin="anonymous" loading="lazy">
+          <div class="station-img-overlay"></div>
+        </div>
+        <div class="station-body">
+          <div class="station-live"><div class="station-live-dot"></div>Ativo agora</div>
+          <div class="station-name">Park Way Shopping</div>
+          <div class="station-addr">Park Way · Brasília · DF</div>
+          <div class="station-specs">
+            <span class="station-spec dc">DC 60kW</span>
+            <span class="station-spec ac">AC 22kW</span>
+            <span class="station-spec dc">Plug CCS · J1772</span>
+          </div>
+        </div>
+      </div>
+      <div class="station-card r d2">
+        <div class="station-img">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/totem_dia_cidauto.jpg" alt="Cidade do Automóvel" crossorigin="anonymous" loading="lazy">
+          <div class="station-img-overlay"></div>
+        </div>
+        <div class="station-body">
+          <div class="station-live"><div class="station-live-dot"></div>Ativo agora</div>
+          <div class="station-name">Cidade do Automóvel</div>
+          <div class="station-addr">SIA · Brasília · DF</div>
+          <div class="station-specs">
+            <span class="station-spec dc">DC 60kW</span>
+            <span class="station-spec ac">AC 22kW</span>
+            <span class="station-spec dc">Plug CCS · CHAdeMO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Como usar -->
+    <div style="margin-top:72px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:16px;overflow:hidden;" class="r d1">
+      <div style="background:var(--surface-1);padding:32px 28px;">
+        <div style="font-size:28px;margin-bottom:14px;">📍</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Chegue ao local</div>
+        <div style="font-size:13px;color:var(--gray-400);font-family:var(--mono);line-height:1.6;">Procure o totem HertzGo na área de estacionamento. Fácil de encontrar, sempre sinalizado.</div>
+      </div>
+      <div style="background:var(--surface-1);padding:32px 28px;">
+        <div style="font-size:28px;margin-bottom:14px;">📱</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Abra o app</div>
+        <div style="font-size:13px;color:var(--gray-400);font-family:var(--mono);line-height:1.6;">Spott ou Move — escolha o que preferir. Inicie a sessão em segundos pelo smartphone.</div>
+      </div>
+      <div style="background:var(--surface-1);padding:32px 28px;">
+        <div style="font-size:28px;margin-bottom:14px;">🔌</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Conecte e vá</div>
+        <div style="font-size:13px;color:var(--gray-400);font-family:var(--mono);line-height:1.6;">Plugue o cabo, confirme no app e pronto. Faça o que veio fazer — o carro cuida do resto.</div>
+      </div>
+      <div style="background:var(--surface-1);padding:32px 28px;">
+        <div style="font-size:28px;margin-bottom:14px;">⚡</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Volte recarregado</div>
+        <div style="font-size:13px;color:var(--gray-400);font-family:var(--mono);line-height:1.6;">Receba notificação quando finalizar. Pague pelo app. Desconecte e siga em frente.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECNOLOGIA / CARREGADORES ═══ -->
+<section id="tecnologia" class="chargers-section">
+  <div class="container">
+    <div class="r" style="margin-bottom:0;">
+      <div class="section-badge">Tecnologia</div>
+      <h2 class="section-h2">Potência certa<br>para cada<br><em>momento.</em></h2>
+      <p class="section-desc">Da recarga rápida entre compromissos ao carregamento completo durante uma refeição — temos a solução ideal para cada situação.</p>
+    </div>
+
+    <div class="chargers-grid">
+      <!-- Specs -->
+      <div class="charger-specs r">
+        <div class="cs dc">
+          <div class="cs-badge">DC Rápido</div>
+          <div class="cs-power">30 kW</div>
+          <div class="cs-info">
+            <div class="cs-title">Recarga Urbana</div>
+            <div class="cs-desc">Ideal para 30–45 min de parada. Entrega autonomia significativa para rotinas urbanas sem necessidade de espera longa.</div>
+            <div class="cs-compat">CCS · CHAdeMO · compatível com a maioria dos EVs</div>
+          </div>
+        </div>
+        <div class="cs dc">
+          <div class="cs-badge">DC Ultra</div>
+          <div class="cs-power">120 kW</div>
+          <div class="cs-info">
+            <div class="cs-title">Carregamento Expresso</div>
+            <div class="cs-desc">0 a 80% em aproximadamente 20 minutos. Para quem tem pressa — ou simplesmente não quer perder tempo.</div>
+            <div class="cs-compat">CCS · CHAdeMO · Tesla com adaptador</div>
+          </div>
+        </div>
+        <div class="cs ac">
+          <div class="cs-badge">AC Standard</div>
+          <div class="cs-power">11 kW</div>
+          <div class="cs-info">
+            <div class="cs-title">Recarga Inteligente</div>
+            <div class="cs-desc">Perfeito para paradas de 2h ou mais. Condomínios, academias e restaurantes — carrega enquanto você vive.</div>
+            <div class="cs-compat">J1772 · Tipo 2 · todos os PHEVs e BEVs</div>
+          </div>
+        </div>
+        <div class="cs ac">
+          <div class="cs-badge">AC Plus</div>
+          <div class="cs-power">22 kW</div>
+          <div class="cs-info">
+            <div class="cs-title">Recarga Acelerada</div>
+            <div class="cs-desc">O melhor dos dois mundos — velocidade do AC com custo de infraestrutura acessível. Ideal para fluxo constante de veículos.</div>
+            <div class="cs-compat">J1772 · Tipo 2 · veículos com onboard charger ≥11kW</div>
+          </div>
+        </div>
+      </div>
+      <!-- Imagem -->
+      <div class="charger-visual r d1">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/dc80kw_cobertura_azul.jpg" alt="Eletroposto DC HertzGo" crossorigin="anonymous" loading="lazy">
+        <div class="charger-visual-overlay"></div>
+        <div style="position:absolute;bottom:24px;left:24px;right:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;">Compatibilidade universal</div>
+          <div style="font-size:13px;color:var(--gray-300);line-height:1.5;">BYD · Tesla · Volvo · Volkswagen · Hyundai · Kia · Toyota · BMW · Mercedes · e todos os EVs e PHEVs do mercado brasileiro.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARCEIROS ═══ -->
+<section id="parceiros">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;" class="r">
+      <div>
+        <div class="section-badge">Para parceiros</div>
+        <h2 class="section-h2">Seu espaço.<br><em>Nossa operação.</em><br><span class="dim">Resultado de todos.</span></h2>
+        <p class="section-desc">Supermercados, shoppings, condomínios e centros automotivos — você cede o espaço, a HertzGo cuida de absolutamente tudo. Do projeto elétrico à manutenção diária.</p>
+        <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;">
+          <div class="pillar">
+            <div class="pillar-icon">🚫</div>
+            <div><div class="pillar-title">Zero investimento</div><div class="pillar-desc">HertzGo banca projeto, equipamentos, instalação e operação. Você entra sem arriscar nada.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🧲</div>
+            <div><div class="pillar-title">Mais fluxo e permanência</div><div class="pillar-desc">Motoristas de EV ficam mais tempo no local enquanto carregam. Ticket médio maior para o seu negócio.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">💚</div>
+            <div><div class="pillar-title">ESG de verdade</div><div class="pillar-desc">Reduza a pegada de carbono do seu negócio e associe sua marca à mobilidade limpa.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">📊</div>
+            <div><div class="pillar-title">Participação no resultado</div><div class="pillar-desc">Modelos flexíveis de parceria — do split de receita à concessão de espaço com benefícios exclusivos.</div></div>
+          </div>
+        </div>
+        <div style="margin-top:32px;">
+          <a href="https://wa.me/5561998037361?text=Olá%20Wagner!%20Tenho%20um%20espaço%20e%20quero%20ser%20parceiro%20HertzGo." target="_blank" class="btn btn-filled">Quero ser parceiro →</a>
+        </div>
+      </div>
+      <div style="position:relative;border-radius:20px;overflow:hidden;height:560px;" class="r d1">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/costa_noite_amplo.jpg" alt="Costa Atacadão" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(1.1);">
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.4),transparent 70%);"></div>
+        <div style="position:absolute;top:24px;left:24px;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 18px;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">Parceiro ativo</div>
+          <div style="font-size:14px;font-weight:600;color:var(--accent);">Costa Atacadão · Águas Claras</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALERIA ═══ -->
+<section style="padding:80px 0;border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="gallery-grid r">
+      <div class="gg gg-a">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/carregador_costa.jpg" alt="Carregador" crossorigin="anonymous" loading="lazy">
+        <div class="gg-cap">Eletroposto · Costa Atacadão</div>
+      </div>
+      <div class="gg gg-b">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/byds_fila.jpg" alt="BYDs" crossorigin="anonymous" loading="lazy">
+        <div class="gg-cap">Frota de EVs · Carregando</div>
+      </div>
+      <div class="gg gg-c">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/totem_24h.jpg" alt="Totem 24H" crossorigin="anonymous" loading="lazy">
+        <div class="gg-cap">Totem · Disponível 24H</div>
+      </div>
+      <div class="gg gg-d">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/ac_preto_close.jpg" alt="AC Close" crossorigin="anonymous" loading="lazy">
+        <div class="gg-cap">AC 22kW · Close</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INVESTIDORES ═══ -->
+<section id="investidores" class="invest-section">
+  <div class="container">
+    <div class="invest-layout">
+      <div class="r">
+        <div class="section-badge">Para investidores</div>
+        <h2 class="section-h2">Um modelo<br>que já<br><em>funciona.</em></h2>
+        <p class="section-desc">A HertzGo opera eletropostos com gestão profissional, tecnologia proprietária e resultado mensal documentado. Você participa de um negócio real — com retorno real e transparência total.</p>
+        <div class="invest-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">⚡</div>
+            <div><div class="pillar-title">Operação validada</div><div class="pillar-desc">Meses de dados reais e crescimento documentado. Nenhuma projeção — só resultados concretos verificáveis.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">📊</div>
+            <div><div class="pillar-title">Transparência total</div><div class="pillar-desc">Dashboard proprietário ao vivo + relatório mensal automático. Você acompanha cada centavo em tempo real.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🔒</div>
+            <div><div class="pillar-title">Garantia nos equipamentos</div><div class="pillar-desc">Os equipamentos são a garantia real até a quitação do aporte. Segurança contratual desde o primeiro dia.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">💰</div>
+            <div><div class="pillar-title">Retorno mensal</div><div class="pillar-desc">Distribuição todo mês, com documentação completa. Sem burocracia, sem surpresas.</div></div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">📈</div>
+            <div><div class="pillar-title">Mercado em expansão</div><div class="pillar-desc">Brasília tem uma das maiores concentrações de EVs do Brasil. A demanda cresce — a infraestrutura não acompanha. Essa é a janela.</div></div>
+          </div>
+        </div>
+        <div style="margin-top:36px;">
+          <a href="https://wa.me/5561998037361?text=Olá%20Wagner!%20Tenho%20interesse%20em%20investir%20na%20HertzGo." target="_blank" class="btn btn-filled">Quero conversar →</a>
+        </div>
+      </div>
+      <div class="invest-visual r d1">
+        <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/letreiro_noite.jpg" alt="HertzGo à noite" crossorigin="anonymous" loading="lazy">
+        <div class="invest-visual-overlay"></div>
+        <div class="invest-badge">
+          <div class="ib-lbl">Operação</div>
+          <div class="ib-val">Brasília · Ativa ↗</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOBRE ═══ -->
+<section id="sobre">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+      <div class="r">
+        <div class="section-badge">Sobre a HertzGo</div>
+        <h2 class="section-h2">Nascemos em<br>Brasília.<br><em>Para o Brasil.</em></h2>
+        <p class="section-desc">A HertzGo nasceu da convicção de que a infraestrutura de recarga elétrica precisa chegar antes dos carros — não depois.</p>
+        <p style="font-size:15px;color:var(--gray-400);line-height:1.7;margin-top:16px;">Brasília, com seu relevo plano, alta renda per capita e frota crescente de EVs premium, é o laboratório perfeito para validar um modelo que será replicado em todo o Brasil. Operamos com tecnologia proprietária, gestão 100% profissional e um modelo que distribui valor para todos os elos — motoristas, parceiros e investidores.<br><br>Não somos um ponto de recarga. Somos uma rede inteligente em expansão constante.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:36px;" class="r d1">
+          <div style="background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px;">
+            <div style="font-size:22px;margin-bottom:8px;">🗺️</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Brasília</div>
+            <div style="font-size:12px;color:var(--gray-500);font-family:var(--mono);">Base de operações e laboratório de crescimento</div>
+          </div>
+          <div style="background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px;">
+            <div style="font-size:22px;margin-bottom:8px;">🤖</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Tecnologia própria</div>
+            <div style="font-size:12px;color:var(--gray-500);font-family:var(--mono);">Dashboard, CRM e relatórios desenvolvidos internamente</div>
+          </div>
+          <div style="background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px;">
+            <div style="font-size:22px;margin-bottom:8px;">🔗</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Modelo colaborativo</div>
+            <div style="font-size:12px;color:var(--gray-500);font-family:var(--mono);">Parceiros, investidores e motoristas — todos ganham</div>
+          </div>
+          <div style="background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px;">
+            <div style="font-size:22px;margin-bottom:8px;">🌱</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Impacto real</div>
+            <div style="font-size:12px;color:var(--gray-500);font-family:var(--mono);">Toneladas de CO₂ evitadas. Mobilidade limpa que faz sentido.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:260px 260px;gap:8px;" class="r d1">
+        <div style="border-radius:14px;overflow:hidden;grid-row:span 2;">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/mascote_parkway.jpg" alt="Park Way" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+        </div>
+        <div style="border-radius:14px;overflow:hidden;">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/totem_24h.jpg" alt="Totem 24H" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+        </div>
+        <div style="border-radius:14px;overflow:hidden;">
+          <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/mascote_costa.jpg" alt="Mascote Costa" crossorigin="anonymous" loading="lazy" style="width:100%;height:100%;object-fit:cover;filter:brightness(.8);">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section style="padding:120px 0;border-top:1px solid var(--border);text-align:center;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(34,197,94,.05) 0%,transparent 70%);pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="max-width:640px;margin:0 auto;" class="r">
+      <div class="section-badge" style="justify-content:center;">Próximo passo</div>
+      <h2 class="section-h2" style="font-size:clamp(48px,7vw,88px);letter-spacing:-.05em;margin-bottom:20px;">Vamos<br><em>conversar.</em></h2>
+      <p style="font-size:18px;color:var(--gray-400);line-height:1.65;margin-bottom:52px;">Seja motorista, parceiro ou investidor — há um lugar certo para você na rede HertzGo. Uma conversa de 15 minutos resolve.</p>
+      <div style="font-family:var(--mono);font-size:clamp(26px,3.5vw,42px);font-weight:500;color:var(--white);margin-bottom:6px;letter-spacing:-.02em;">(61) 99803-7361</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--gray-600);letter-spacing:.1em;margin-bottom:40px;">Wagner Miranda · Sócio Fundador · WhatsApp</div>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="https://wa.me/5561998037361?text=Olá%20Wagner!%20Vi%20o%20site%20da%20HertzGo." target="_blank" class="btn btn-filled">💬 WhatsApp</a>
+        <a href="https://hertzgo-vision.vercel.app" target="_blank" class="btn btn-outline">📊 Dashboard →</a>
+      </div>
+      <!-- Cards de intent -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:48px;" class="r d1">
+        <a href="https://wa.me/5561998037361?text=Olá!%20Quero%20saber%20onde%20estão%20os%20eletropostos%20HertzGo." target="_blank" style="background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:22px 18px;text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:all .22s var(--ease);cursor:none;" class="cta-card">
+          <div style="font-size:22px;">🔌</div>
+          <div style="font-size:14px;font-weight:600;">Motorista EV</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--gray-500);">Onde carregar em Brasília</div>
+          <div style="font-size:12px;color:var(--gray-600);margin-top:auto;">→</div>
+        </a>
+        <a href="https://wa.me/5561998037361?text=Olá%20Wagner!%20Tenho%20um%20espaço%20e%20quero%20ser%20parceiro%20HertzGo." target="_blank" style="background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:22px 18px;text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:all .22s var(--ease);cursor:none;" class="cta-card">
+          <div style="font-size:22px;">🏢</div>
+          <div style="font-size:14px;font-weight:600;">Parceiro de espaço</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--gray-500);">Zero investimento · resultado garantido</div>
+          <div style="font-size:12px;color:var(--gray-600);margin-top:auto;">→</div>
+        </a>
+        <a href="https://wa.me/5561998037361?text=Olá%20Wagner!%20Tenho%20interesse%20em%20investir%20na%20HertzGo." target="_blank" style="background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:22px 18px;text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:all .22s var(--ease);cursor:none;" class="cta-card">
+          <div style="font-size:22px;">💰</div>
+          <div style="font-size:14px;font-weight:600;">Investidor</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--gray-500);">Modelo validado · retorno mensal</div>
+          <div style="font-size:12px;color:var(--gray-600);margin-top:auto;">→</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <img src="https://raw.githubusercontent.com/wagnervomiranda-lgtm/hertzgo-vision/main/Logo%20Atual.jpeg" alt="HertzGo" crossorigin="anonymous">
+  <div class="foot-links">
+    <a href="#motoristas" class="foot-link">Motoristas</a>
+    <a href="#tecnologia" class="foot-link">Tecnologia</a>
+    <a href="#parceiros" class="foot-link">Parceiros</a>
+    <a href="#investidores" class="foot-link">Investidores</a>
+    <a href="#sobre" class="foot-link">Sobre</a>
+    <a href="https://hertzgo-vision.vercel.app" target="_blank" class="foot-link">Dashboard →</a>
+  </div>
+  <div class="foot-copy">© 2026 HertzGo · Brasília · DF · Brasil</div>
+</footer>
+
+<script>
+/* ── CURSOR MAGNÉTICO ── */
+const cur=document.getElementById('cur'),aura=document.getElementById('aura');
+let mx=0,my=0,ax=0,ay=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){ax+=(mx-ax)*.11;ay+=(my-ay)*.11;aura.style.left=ax+'px';aura.style.top=ay+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.bc,.kpi,.dash-tab,.bar').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';aura.style.width='54px';aura.style.height='54px';aura.style.borderColor='rgba(34,197,94,.5)';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';aura.style.width='36px';aura.style.height='36px';aura.style.borderColor='rgba(34,197,94,.3)';});
+});
+
+/* ── REVEAL ── */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');});},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+
+/* ── PBAR ── */
+const pbObs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){setTimeout(()=>{document.getElementById('pbarFill').style.width='77.7%';},150);pbObs.disconnect();}});},{threshold:.5});
+const pf=document.getElementById('pbarFill');
+if(pf)pbObs.observe(pf);
+
+/* ── GRÁFICO ── */
+const vals=[310,180,280,420,370,260,340,480,510,375,408,570,615,535,460,675,585,710,640,505,455,585,655,705,575,425,505,665,715,775];
+const chart=document.getElementById('chartBars');
+if(chart){
+  const mx=Math.max(...vals);
+  vals.forEach(v=>{
+    const b=document.createElement('div');
+    b.className='bar'+(v===mx?' peak':'');
+    b.style.height=Math.round(v/mx*88+8)+'%';
+    const tip=document.createElement('div');
+    tip.className='bar-tip';
+    tip.textContent='R$'+v;
+    b.appendChild(tip);
+    chart.appendChild(b);
+  });
+}
+
+/* ── TABS DASHBOARD ── */
+document.querySelectorAll('.dash-tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.dash-tab').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+
+/* ── BENTO POR PERFIL ── */
+const profiles={
+  inv:[
+    {s:'bc-7 bc-accent',tag:'Operação validada · 4 meses',num:'R$52.636',nc:'g',sub:'Receita acumulada · 5 estações · Dez/25 → Mar/26',extra:'bars'},
+    {s:'bc-5',tag:'ROI pós-payback estimado',num:'~15%',nc:'g',desc:'Retorno anual sobre capital após quitação. Operação real.'},
+    {s:'bc-4',tag:'Payback integralizado',num:'77,7%',nc:'b',extra:'prog'},
+    {s:'bc-4 bc-accent',tag:'Retorno mensal comprovado',num:'R$1.810',nc:'g',desc:'Fev/2026 · Dado verificável, não projeção.'},
+    {s:'bc-4',tag:'Distribuição',num:'Mensal',nc:'w',desc:'Relatório automático + dashboard ao vivo.'},
+    {s:'bc-6',tag:'Estações ativas',extra:'stations'},
+    {s:'bc-6',tag:'Como funciona',extra:'steps'},
+  ],
+  par:[
+    {s:'bc-7 bc-blue',tag:'Modelo parceiro',num:'Zero',nc:'b',sub:'Investimento da sua parte — HertzGo banca tudo'},
+    {s:'bc-5',tag:'O que você ganha',num:'+Receita',nc:'g',desc:'Participação no resultado + aumento de fluxo de clientes no seu negócio.'},
+    {s:'bc-4',tag:'Sua responsabilidade',num:'Espaço',nc:'w',desc:'Você cede o espaço e a conexão elétrica. O resto é com a HertzGo.'},
+    {s:'bc-4 bc-accent',tag:'ESG',num:'✓',nc:'g',desc:'Associe sua marca à sustentabilidade. Diferencial crescente no mercado.'},
+    {s:'bc-4',tag:'Gestão',num:'100%',nc:'b',desc:'Manutenção, suporte, CRM, tecnologia — tudo operado pela HertzGo.'},
+    {s:'bc-12',tag:'Tipos de parceiro ideais',extra:'parceiros'},
+  ],
+  mot:[
+    {s:'bc-7',tag:'Tecnologia disponível',num:'DC 60kW',nc:'g',sub:'Carregamento rápido em ~30 min · AC 22kW disponível'},
+    {s:'bc-5 bc-accent',tag:'Estações em Brasília',num:'5+',nc:'g',desc:'Costa Atacadão, Park Way, Cidade do Automóvel e mais. Expansão em andamento.'},
+    {s:'bc-4',tag:'Preço',num:'R$1,60',nc:'b',desc:'Por kWh. Plataforma Spott. Pagamento pelo app.'},
+    {s:'bc-4',tag:'Disponibilidade',num:'24/7',nc:'g',desc:'Monitoramento contínuo. Zero dias zerados em 2026.'},
+    {s:'bc-4',tag:'Economia',num:'~80%',nc:'g',desc:'Custo por km vs gasolina. Média nacional em 2026.'},
+    {s:'bc-12',tag:'Onde estamos',extra:'map-full'},
+  ],
+};
+
+function renderBento(profile){
+  const grid=document.getElementById('bentoGrid');
+  grid.style.opacity='0';grid.style.transform='translateY(12px)';
+  grid.style.transition='opacity .3s,transform .3s';
+  setTimeout(()=>{
+    grid.innerHTML='';
+    profiles[profile].forEach((c,i)=>{
+      const el=document.createElement('div');
+      el.className=`bc ${c.s}`;
+      let h=`<div class="bc-tag">${c.tag}</div>`;
+      if(c.num)h+=`<div class="bc-num ${c.nc||''}">${c.num}</div>`;
+      if(c.sub)h+=`<div class="bc-sub">${c.sub}</div>`;
+      if(c.desc)h+=`<div class="bc-desc" style="margin-top:10px">${c.desc}</div>`;
+      if(c.extra==='bars')h+=`<div class="mbars"><div class="mb" style="height:35%"></div><div class="mb" style="height:50%"></div><div class="mb" style="height:70%"></div><div class="mb hi" style="height:100%"></div></div><div class="bc-sub" style="margin-top:4px">↑ crescimento mês a mês</div>`;
+      if(c.extra==='prog')h+=`<div class="pbar"><div class="pbar-fill" style="width:77.7%"></div></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span style="font-family:var(--mono);font-size:10px;color:var(--gray-600)">R$0</span><span style="font-family:var(--mono);font-size:10px;color:var(--accent)">77,7%</span><span style="font-family:var(--mono);font-size:10px;color:var(--gray-600)">R$150k</span></div>`;
+      if(c.extra==='stations')h+=`<div class="stations"><div class="st-row"><div class="st-left"><div class="st-dot"></div><div><div class="st-name">Costa Atacadão</div><div class="st-addr">Águas Claras · DC 60kW</div></div></div><div class="st-kpi">~R$11k/mês</div></div><div class="st-row"><div class="st-left"><div class="st-dot" style="animation-delay:.8s"></div><div><div class="st-name">Park Way</div><div class="st-addr">Park Way · DC 60kW</div></div></div><div class="st-kpi">~R$10k/mês</div></div><div class="st-row"><div class="st-left"><div class="st-dot" style="animation-delay:1.4s"></div><div><div class="st-name">Cidade do Automóvel</div><div class="st-addr">SIA · DC 60kW</div></div></div><div class="st-kpi">Ativa</div></div></div>`;
+      if(c.extra==='steps')h+=`<div class="steps-list"><div class="step"><div class="step-n">01</div><div class="step-t"><b>Você investe</b> — aporte com garantia nos equipamentos</div></div><div class="step"><div class="step-n">02</div><div class="step-t"><b>HertzGo opera</b> — gestão 100% profissional</div></div><div class="step"><div class="step-n">03</div><div class="step-t"><b>Recebe todo mês</b> — resultado + relatório automático</div></div><div class="step"><div class="step-n">04</div><div class="step-t"><b>Payback quitado</b> — retorno vira lucro puro</div></div></div>`;
+      if(c.extra==='parceiros')h+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px"><div style="background:var(--surface-3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;margin-bottom:8px">🏪</div><div style="font-size:13px;font-weight:600">Supermercados</div></div><div style="background:var(--surface-3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;margin-bottom:8px">🏢</div><div style="font-size:13px;font-weight:600">Condomínios</div></div><div style="background:var(--surface-3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;margin-bottom:8px">🏬</div><div style="font-size:13px;font-weight:600">Shoppings</div></div></div>`;
+      if(c.extra==='map-full')h+=`<div style="height:120px;position:relative;border-radius:8px;overflow:hidden;margin-top:12px;background:rgba(255,255,255,.02)"><div style="position:absolute;inset:0;background:radial-gradient(circle at 40% 55%,rgba(34,197,94,.07),transparent 40%),radial-gradient(circle at 65% 38%,rgba(59,130,246,.05),transparent 40%),repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(255,255,255,.02) 20px,rgba(255,255,255,.02) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,255,255,.02) 20px,rgba(255,255,255,.02) 21px)"></div><div style="position:absolute;top:42%;left:38%;width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent);animation:pinPulse 2s ease-in-out infinite"></div><div style="position:absolute;top:55%;left:60%;width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent);animation:pinPulse 2.2s ease-in-out infinite .5s"></div><div style="position:absolute;top:34%;left:54%;width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent);animation:pinPulse 2.4s ease-in-out infinite 1s"></div><div style="position:absolute;bottom:10px;left:12px;font-family:var(--mono);font-size:9px;color:var(--gray-600);letter-spacing:.1em">BRASÍLIA · DF · 5 ESTAÇÕES</div></div>`;
+      el.innerHTML=h;
+      grid.appendChild(el);
+      setTimeout(()=>el.style.opacity='1',i*40);
+    });
+    grid.style.opacity='1';grid.style.transform='translateY(0)';
+  },250);
+}
+
+function setProfile(p,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderBento(p);
+}
+
+/* ── NAV TRANSPARÊNCIA ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').style.background=
+    window.scrollY>40?'rgba(0,0,0,.88)':'rgba(0,0,0,.72)';
+});
+
+/* ── IA PERSONALIZAÇÃO POR COMPORTAMENTO ── */
+let timeOnPage=0,sectionsViewed=new Set(),scrollDepth=0;
+setInterval(()=>timeOnPage++,1000);
+window.addEventListener('scroll',()=>{
+  const d=window.scrollY/(document.body.scrollHeight-window.innerHeight);
+  if(d>scrollDepth)scrollDepth=d;
+  // Se chegou no bento grid sem parar muito → provavelmente investidor → já no modo certo
+});
+</script>
+<script>
+
+/* ── HERO SLIDESHOW ── */
+const slides = document.querySelectorAll('.hero-slide');
+let sIdx = 0;
+if(slides.length){
+  slides[0].classList.add('active');
+  setInterval(()=>{
+    slides[sIdx].classList.remove('active');
+    sIdx=(sIdx+1)%slides.length;
+    slides[sIdx].classList.add('active');
+  },5000);
+}
+
+
+/* ── CTA CARDS HOVER ── */
+document.querySelectorAll('.cta-card').forEach(c=>{
+  c.addEventListener('mouseenter',()=>{c.style.borderColor='rgba(34,197,94,.2)';c.style.background='rgba(34,197,94,.04)';c.style.transform='translateY(-3px)';});
+  c.addEventListener('mouseleave',()=>{c.style.borderColor='';c.style.background='';c.style.transform='';});
+});
+
+/* ── NAV ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').style.background=
+    window.scrollY>48?'rgba(0,0,0,.9)':'rgba(0,0,0,.75)';
+});
+</script>
+</body>
+</html>
