@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/hertzgo_v4.html" }
+  ]
+}
