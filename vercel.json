@@ -1,9 +1,9 @@
 {
   "outputDirectory": ".",
   "builds": [
-    { "src": "hertzgo_v4.html", "use": "@vercel/static" }
+    { "src": "hertzgo_v5.html", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/", "dest": "/hertzgo_v4.html" }
+    { "src": "/", "dest": "/hertzgo_v5.html" }
   ]
 }
