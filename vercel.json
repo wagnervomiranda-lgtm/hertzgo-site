@@ -1,11 +1,13 @@
 {
-  "outputDirectory": ".",
-  "builds": [
-    { "src": "hertzgo_v4.html", "use": "@vercel/static" },
-    { "src": "aeroporto.html", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/", "dest": "/hertzgo_v4.html" },
-    { "src": "/aeroporto", "dest": "/aeroporto.html" }
-  ]
+    "outputDirectory": ".",
+    "builds": [
+          { "src": "hertzgo_v4.html", "use": "@vercel/static" },
+          { "src": "aeroporto.html", "use": "@vercel/static" },
+          { "src": "investidores.html", "use": "@vercel/static" }
+    ],
+    "routes": [
+          { "src": "/", "dest": "/hertzgo_v4.html" },
+          { "src": "/aeroporto", "dest": "/aeroporto.html" },
+          { "src": "/investidores", "dest": "/investidores.html" }
+    ]
 }
