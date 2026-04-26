@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HertzGo — Painel da Rede</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #05101a; color: #e8f0f5; padding: 14px; min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 20% 20%, rgba(181,240,42,0.08) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(1,96,112,0.20) 0%, transparent 50%), radial-gradient(circle at 60% 30%, rgba(0,200,255,0.05) 0%, transparent 40%); pointer-events: none; z-index: 0; animation: glow 18s ease-in-out infinite alternate; }
+  @keyframes glow { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
+  .container { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+  .preview-banner { background: linear-gradient(135deg, rgba(240,192,64,0.2), rgba(240,192,64,0.05)); border: 1px dashed #f0c040; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #ffe9b8; }
+  .preview-banner strong { color: #fff; }
+  .header { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 9px; background: #000; border: 1px solid rgba(111,230,245,0.25); transition: box-shadow 0.4s; }
+  .logo-img { display:block; height: 28px; width: auto; }
+  /* Pulsação — 3 intensidades */
+  .logo-mark.pulse-medio  { animation: pulseMedio 2.6s ease-in-out infinite; }
+  @keyframes pulseMedio { 0%,100% { box-shadow: 0 0 16px rgba(111,230,245,0.30); } 50% { box-shadow: 0 0 36px rgba(111,230,245,0.65); transform: scale(1.02); } }
+  .title-block { flex: 1; }
+  .title-main { font-size: 16px; font-weight: 700; color: #fff; }
+  .subtitle { color: #8a9ba8; font-size: 11px; font-weight: 500; letter-spacing: 0.4px; text-transform: uppercase; }
+  .meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .period-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(1,96,112,0.25); border: 1px solid rgba(181,240,42,0.3); padding: 6px 12px; border-radius: 999px; font-size: 12px; }
+  .period-chip .dot { width: 7px; height: 7px; background: #b5f02a; border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 8px #b5f02a; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .tabs { display: flex; gap: 4px; background: rgba(13,27,42,0.6); padding: 3px; border-radius: 10px; border: 1px solid rgba(138,155,168,0.15); }
+  .tab { padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; color: #8a9ba8; cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
+  .tab.active { background: linear-gradient(135deg, #016070, #023a44); color: #e8f0f5; box-shadow: 0 2px 12px rgba(1,96,112,0.4); }
+  .alerts { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .alert { display: flex; gap: 10px; align-items: flex-start; border-radius: 10px; padding: 12px 14px; font-size: 13px; border-left: 3px solid; line-height: 1.45; }
+  .alert.crit { background: linear-gradient(135deg, rgba(255,68,68,0.18), rgba(255,68,68,0.06)); border-color: #ff5064; color: #ffd4da; }
+  .alert.warn { background: linear-gradient(135deg, rgba(240,192,64,0.18), rgba(240,192,64,0.06)); border-color: #f0c040; color: #ffe9b8; }
+  .alert.info { background: linear-gradient(135deg, rgba(111,230,245,0.14), rgba(111,230,245,0.04)); border-color: #6fe6f5; color: #c5eff5; }
+  .alert strong { color: #fff; font-weight: 700; }
+
+  /* SECTION HEADER (label dos blocos Mês / Hoje) */
+  .section-label { display: flex; align-items: center; gap: 10px; margin: 18px 0 8px 0; }
+  .section-label .lbl { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; }
+  .section-label .lbl.mes { background: rgba(181,240,42,0.15); color: #c5ff50; border: 1px solid rgba(181,240,42,0.4); }
+  .section-label .lbl.hoje { background: rgba(111,230,245,0.15); color: #6fe6f5; border: 1px solid rgba(111,230,245,0.4); }
+  .section-label .ctx { font-size: 11px; color: #8a9ba8; }
+
+  /* KPI grids — MES */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .kpi { background: linear-gradient(135deg, rgba(13,27,42,0.9), rgba(9,25,41,0.95)); border: 1px solid rgba(138,155,168,0.12); border-radius: 14px; padding: 14px; position: relative; overflow: hidden; }
+  .kpi.mes::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #b5f02a, #c5ff50); }
+  .kpi.hoje::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6fe6f5, #00c8ff); }
+  .kpi-label { font-size: 10px; color: #8a9ba8; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: #fff; margin-top: 6px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .kpi-unit { font-size: 12px; color: #8a9ba8; margin-left: 4px; }
+  .kpi-sub { font-size: 11px; color: #8a9ba8; margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .arrow-pill { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .arrow-pill.up { background: rgba(181,240,42,0.18); color: #c5ff50; border: 1px solid rgba(181,240,42,0.3); }
+  .arrow-pill.down { background: rgba(255,80,100,0.15); color: #ff8b9f; border: 1px solid rgba(255,80,100,0.3); }
+  .arrow-pill.neutral { background: rgba(111,230,245,0.15); color: #6fe6f5; border: 1px solid rgba(111,230,245,0.3); }
+
+  .card { background: linear-gradient(135deg, rgba(13,27,42,0.75), rgba(9,25,41,0.9)); border: 1px solid rgba(138,155,168,0.12); border-radius: 14px; padding: 16px; margin-bottom: 14px; backdrop-filter: blur(10px); }
+  .card h2 { margin: 0 0 14px 0; font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; }
+  .card h2::before { content: ''; width: 3px; height: 12px; background: linear-gradient(180deg, #b5f02a, #6fe6f5); border-radius: 2px; }
+  .card.hoje-tag h2::before { background: linear-gradient(180deg, #6fe6f5, #00c8ff); }
+  .card-sub { font-size: 11px; color: #8a9ba8; margin-top: -8px; margin-bottom: 12px; }
+
+  .table-wrap { overflow-x: auto; margin: 0 -4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 540px; }
+  th { text-align: left; padding: 8px 6px; font-weight: 700; color: #8a9ba8; border-bottom: 1px solid rgba(138,155,168,0.2); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  td { padding: 10px 6px; border-bottom: 1px solid rgba(138,155,168,0.08); color: #e8f0f5; }
+  td.right, th.right { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bar { display: inline-block; height: 4px; background: linear-gradient(90deg, #016070, #6fe6f5); border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .bar.hoje { background: linear-gradient(90deg, #6fe6f5, #00c8ff); }
+  .plat { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 999px; font-weight: 700; }
+  .plat.spott { background: rgba(111,230,245,0.12); color: #6fe6f5; border: 1px solid rgba(111,230,245,0.3); }
+  .plat.move { background: rgba(240,192,64,0.12); color: #f0c040; border: 1px solid rgba(240,192,64,0.3); }
+  .status-tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 999px; font-weight: 700; }
+  .status-tag.online { background: rgba(181,240,42,0.18); color: #c5ff50; }
+  .status-tag.idle { background: rgba(240,192,64,0.18); color: #f0c040; }
+  .status-tag.offline { background: rgba(255,80,100,0.18); color: #ff8b9f; }
+
+  .split-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .split-item { padding: 10px 14px; border-left: 2px solid rgba(181,240,42,0.5); background: rgba(5,16,26,0.3); border-radius: 0 8px 8px 0; }
+  .split-item .label { font-size: 10px; color: #8a9ba8; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  .split-item .value { font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .split-item .sub { font-size: 11px; color: #8a9ba8; margin-top: 2px; }
+
+  .courtesy-item { background: rgba(5,16,26,0.3); border-radius: 8px; overflow: hidden; margin-top: 10px; border: 1px solid rgba(138,155,168,0.12); }
+  .courtesy-head { padding: 10px 14px; cursor: pointer; display: flex; justify-content: space-between; user-select: none; }
+  .courtesy-head .arrow { font-size: 14px; color: #8a9ba8; font-weight: bold; transition: transform 0.3s; }
+  .courtesy-item.open .courtesy-head .arrow { transform: rotate(90deg); }
+  .courtesy-body { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+  .courtesy-item.open .courtesy-body { max-height: 600px; }
+  .courtesy-list { padding: 0 14px 12px 14px; font-size: 12px; }
+  .courtesy-list table { min-width: 0; }
+  .courtesy-list th { font-size: 10px; }
+
+  .heatmap { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 8px; }
+  .heat-cell { aspect-ratio: 1; border-radius: 3px; }
+  .heat-axis { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; font-size: 8px; color: #566977; margin-top: 4px; text-align: center; }
+  .peak-insight { background: rgba(111,230,245,0.06); border: 1px solid rgba(111,230,245,0.2); border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 12px; color: #c5eff5; line-height: 1.5; }
+  .peak-insight strong { color: #fff; }
+  .peak-insight .insight-row { padding: 4px 0; border-top: 1px solid rgba(111,230,245,0.1); }
+  .peak-insight .insight-row:first-child { border-top: none; }
+  .peak-insight .ai-tag { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 999px; background: rgba(111,230,245,0.2); color: #6fe6f5; font-weight: 700; margin-right: 6px; }
+
+  .chart-container { position: relative; height: 280px; }
+  .chart-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 11px; color: #8a9ba8; align-items: center; }
+  .chart-legend .item { display: inline-flex; align-items: center; gap: 5px; }
+  .chart-legend .sw { width: 10px; height: 10px; border-radius: 2px; }
+  .chart-legend .ln { width: 18px; height: 2px; }
+
+  .health-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .charger { background: rgba(5,16,26,0.6); border: 1px solid rgba(138,155,168,0.15); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 12px; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.online { background: #b5f02a; box-shadow: 0 0 10px rgba(181,240,42,0.7); }
+  .status-dot.warn { background: #f0c040; }
+  .status-dot.crit { background: #ff5064; }
+  .charger-info { flex: 1; min-width: 0; }
+  .charger-name { font-size: 12px; font-weight: 600; }
+  .charger-meta { font-size: 10px; color: #8a9ba8; margin-top: 2px; }
+  .disp-bar { flex-shrink: 0; text-align: right; min-width: 50px; }
+  .disp-bar .pct { font-size: 14px; font-weight: 800; color: #fff; }
+  .disp-bar .pct.warn { color: #f0c040; }
+
+  .placeholder-tag { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 999px; font-weight: 700; background: rgba(240,192,64,0.18); color: #f0c040; border: 1px solid rgba(240,192,64,0.3); margin-left: 6px; }
+
+  .footer { text-align: center; color: #566977; font-size: 10px; margin-top: 16px; }
+
+  @media (min-width: 640px) {
+    body { padding: 20px; }
+    .header { flex-direction: row; justify-content: space-between; align-items: center; }
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .health-grid { grid-template-columns: repeat(2, 1fr); }
+    .split-grid { grid-template-columns: repeat(3, 1fr); }
+    .chart-container { height: 340px; }
+  }
+  @media (min-width: 1024px) { .health-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="preview-banner">
+    <strong>v7-final</strong> — Mês + Hoje fundidos · Ano com inteligência por estação · Usuários do mês + Top 10 concentração.
+  </div>
+
+  <div class="header">
+    <div class="brand">
+      <div class="logo-mark pulse-medio" id="logo-mark"><img class="logo-img" src="data:image/jpeg;base64,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" alt="HertzGo"/></div>
+      <div class="title-block">
+        <div class="title-main">Status da Rede</div>
+        <div class="subtitle">Dashboard Operacional</div>
+      </div>
+    </div>
+    <div class="meta-row">
+      <div class="period-chip"><span class="dot"></span><span id="period-label">Painel · 25/04/2026 09:30</span></div>
+      <div class="tabs">
+        <button class="tab active" data-period="painel">Painel</button>
+        <button class="tab" data-period="ano">Ano</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alerts" id="alerts"></div>
+  <div id="dynamic"></div>
+
+  <div class="footer">v7-final · 26/04/2026 · logo verdadeira + cards de usuários</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script>
+const META_DIARIA = 1547;
+
+const UNITS_META = [
+  {short:'Park Way', name:'Park Way QD 05 (Vila Tarego)', plat:'move', color:'#f0c040'},
+  {short:'Madeiro Sia', name:'Madeiro e Gerônimo Sia Brasília', plat:'spott', color:'#6fe6f5'},
+  {short:'Costa', name:'Costa Atacadão Águas Claras', plat:'spott', color:'#ff8b9f'},
+  {short:'Mamute', name:'Lava Jato do Mamute', plat:'spott', color:'#b5f02a'},
+  {short:'Madeiro & J.', name:'Madeiro & Jerônimo', plat:'spott', color:'#c5a3ff'},
+  {short:'Cidade Auto', name:'Cidade do Automóvel', plat:'spott', color:'#ffb478'}
+];
+
+const UNITS_MES = [
+  {short:'Park Way', rev:9689.34, kwh:7434, sess:293, disp:99, variacao:11, status:'online'},
+  {short:'Madeiro Sia', rev:7404.26, kwh:6700, sess:266, disp:99, variacao:-17.45, status:'online'},
+  {short:'Costa', rev:6188.61, kwh:3210, sess:175, disp:90, variacao:-39.06, status:'online'},
+  {short:'Mamute', rev:2786.55, kwh:2790, sess:115, disp:92, variacao:57.06, status:'online'},
+  {short:'Madeiro & J.', rev:1961.59, kwh:1530, sess:80, disp:98, variacao:-32.33, status:'online'},
+  {short:'Cidade Auto', rev:1616.89, kwh:1210, sess:50, disp:99, variacao:740.00, status:'online'}
+];
+
+const UNITS_HOJE = [
+  {short:'Park Way', rev:125.02, kwh:114.45, sess:5, disp:99, status:'online'},
+  {short:'Madeiro Sia', rev:0, kwh:0, sess:0, disp:99, status:'idle'},
+  {short:'Costa', rev:0, kwh:0, sess:0, disp:60, status:'idle'},
+  {short:'Mamute', rev:0, kwh:0, sess:0, disp:92, status:'idle'},
+  {short:'Madeiro & J.', rev:0, kwh:0, sess:0, disp:98, status:'idle'},
+  {short:'Cidade Auto', rev:0, kwh:0, sess:0, disp:99, status:'idle'}
+];
+
+const DAILY = {
+  'Park Way':      [287.67,508.12,335.04,453.54,396.97,393.07,396.19,384.45,516.97,296.78,581.40,530.50,590.07,212.44,544.44,322.71,348.68,363.08,325.28,285.97,365.51,362.63,529.46,358.37],
+  'Madeiro Sia':   [460.04,302.64,297.87,308.00,390.10,380.17,284.23,279.86,302.78,354.46,341.48,425.07,41.58,267.30,239.28,263.06,381.35,362.43,452.01,182.97,213.54,226.16,251.62,200.65],
+  'Costa':         [789.16,489.77,254.93,402.12,352.41,30.48,274.32,221.65,511.23,422.38,393.59,389.58,335.43,114.69,150.04,144.37,358.11,90.56,9.41,74.54,181.49,124.29,0,74.06],
+  'Mamute':        [68.84,89.96,126.26,144.08,0,0,154.35,139.97,94.88,137.74,196.75,199.38,202.35,67.31,169.90,87.64,207.50,92.80,155.34,30.82,69.20,165.09,71.01,69.04],
+  'Madeiro & J.':  [58.48,0,61.87,55.86,142.90,62.55,77.91,110.85,85.73,40.04,139.97,0,118.67,115.64,0.58,62.40,64.68,0,88.39,151.82,78.15,141.09,233.13,70.88],
+  'Cidade Auto':   [63.75,161.59,100.71,191.44,0,85.62,0,72.15,131.07,100.90,55.13,61.16,80.56,47.50,0,112.02,44.40,19.56,0,115.38,65.82,60.52,47.61,0]
+};
+const DAILY_LABELS = Array.from({length:24},(_,i)=>String(i+1).padStart(2,'0'));
+
+const HOUR_MES = [2,5,1,1,3,3,14,7,11,8,19,18,14,7,9,19,27,24,9,23,18,20,11,8];
+// Mês anterior (placeholder pra inteligência) — pico era 17h
+const HOUR_MAR_ANTERIOR = [3,4,2,1,2,3,11,6,9,7,17,16,12,8,11,16,22,28,11,18,14,15,9,7];
+
+const COURTESY_MES = [
+  {name:'Wagner Miranda', kwh:92.72, n:3, valor:120.54},
+  {name:'Nelson Almeida de Jesus', kwh:81.02, n:2, valor:105.33},
+  {name:'Emanuel Batista da Silva', kwh:73.17, n:2, valor:95.12},
+  {name:'Luiza souza Miranda', kwh:40.92, n:1, valor:53.20},
+  {name:'Eduardo Andrade de Lima', kwh:24.03, n:1, valor:31.24}
+];
+
+const CHARGERS = [
+  {name:'Park Way · Conector 1', power:'DC 80kW', disp:null, hb:'ativo agora'},
+  {name:'Park Way · Conector 2', power:'DC 80kW', disp:null, hb:'ativo (Move)'},
+  {name:'Cidade Automóvel · DC 40kW', power:'DC 40kW', disp:99, hb:'25/04 09:26'},
+  {name:'Madeiro Sia · #1', power:'DC', disp:99, hb:'25/04 09:26'},
+  {name:'Madeiro Sia · #2', power:'DC', disp:99, hb:'25/04 09:26'},
+  {name:'Costa · DC 120kW #1', power:'DC 120kW', disp:98, hb:'25/04 09:24'},
+  {name:'Costa · DC 120kW #2', power:'DC 120kW', disp:98, hb:'25/04 09:24'},
+  {name:'Madeiro & J. · #1', power:'DC', disp:98, hb:'25/04 09:26'},
+  {name:'Madeiro & J. · #2', power:'DC', disp:98, hb:'25/04 09:26'},
+  {name:'Mamute · DC 30kW', power:'DC 30kW', disp:92, hb:'25/04 09:26'},
+  {name:'Costa · AC 22kW', power:'AC 22kW', disp:60, hb:'25/04 09:26'}
+];
+
+// ANO
+const MONTHLY_REV_BY_UNIT = {
+  'Dez/25': {'Park Way':5500,'Madeiro Sia':3200,'Costa':4100,'Mamute':1200,'Madeiro & J.':800,'Cidade Auto':946},
+  'Jan/26': {'Park Way':3100,'Madeiro Sia':1800,'Costa':2300,'Mamute':600,'Madeiro & J.':500,'Cidade Auto':487},
+  'Fev/26':{'Park Way':6200,'Madeiro Sia':4300,'Costa':5100,'Mamute':1400,'Madeiro & J.':1100,'Cidade Auto':908},
+  'Mar/26':{'Park Way':14500,'Madeiro Sia':10100,'Costa':10800,'Mamute':3700,'Madeiro & J.':2700,'Cidade Auto':2400},
+  'Abr/26':{'Park Way':9689,'Madeiro Sia':7404,'Costa':6189,'Mamute':2787,'Madeiro & J.':1962,'Cidade Auto':1617}
+};
+const MONTHLY_TOTAL = Object.entries(MONTHLY_REV_BY_UNIT).map(([m,units]) => ({mes:m, rev: Object.values(units).reduce((a,v)=>a+v,0)}));
+
+let chartInstance = null;
+
+// ALERTS — só na primeira aba
+function renderAlerts(showAlerts) {
+  const el = document.getElementById('alerts');
+  el.innerHTML = '';
+  if (!showAlerts) return;
+  const items = [
+    {sev:'warn', ic:'🟠', t:'<strong>Costa · AC 22kW</strong> com 60% de disponibilidade · revisar OCPP'},
+    {sev:'warn', ic:'🟠', t:'<strong>Cidade Auto</strong> teve 5 dias sem faturar este mês'},
+    {sev:'warn', ic:'🟠', t:'<strong>Costa</strong> −39% em receita vs março'},
+    {sev:'warn', ic:'🟠', t:'<strong>Madeiro & J.</strong> −32% em receita vs março'}
+  ];
+  items.forEach(a => { const d = document.createElement('div'); d.className='alert '+a.sev; d.innerHTML=`<span style="font-size:16px;">${a.ic}</span><div>${a.t}</div>`; el.appendChild(d); });
+}
+
+// ==== PAINEL (Mês + Hoje fundidos)
+function renderPainel() {
+  const totalHoje = UNITS_HOJE.reduce((a,u)=>a+u.rev,0);
+  const totalKwhHoje = UNITS_HOJE.reduce((a,u)=>a+u.kwh,0);
+  const totalSessHoje = UNITS_HOJE.reduce((a,u)=>a+u.sess,0);
+  const totalMes = UNITS_MES.reduce((a,u)=>a+u.rev,0);
+  const totalKwhMes = UNITS_MES.reduce((a,u)=>a+u.kwh,0);
+  const totalSessMes = UNITS_MES.reduce((a,u)=>a+u.sess,0);
+  const dyn = document.getElementById('dynamic');
+  dyn.innerHTML = `
+    <div class="section-label"><span class="lbl mes">MÊS · 01-24/04</span><span class="ctx">24 dias acumulados</span></div>
+    <div class="kpi-grid">
+      <div class="kpi mes"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 29.378</div><div class="kpi-sub"><span>R$ 1.224/dia</span><span class="arrow-pill down"><span class="ar">↘</span> 16,87%</span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Energia</div><div class="kpi-value">22.568<span class="kpi-unit">kWh</span></div><div class="kpi-sub"><span>940 kWh/dia</span><span class="arrow-pill down"><span class="ar">↘</span> 17,73%</span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Sessões</div><div class="kpi-value">954</div><div class="kpi-sub"><span>95,7% OK</span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Disponibilidade</div><div class="kpi-value">88,7<span class="kpi-unit">%</span></div><div class="kpi-sub"><span>11/11 online</span><span class="arrow-pill up"><span class="ar">↗</span> 13,50%</span></div></div>
+    </div>
+
+    <div class="section-label"><span class="lbl hoje">HOJE · 25/04</span><span class="ctx">parcial · atualiza a cada hora 06h-22h</span></div>
+    <div class="kpi-grid">
+      <div class="kpi hoje"><div class="kpi-label">Faturamento Hoje</div><div class="kpi-value">R$ ${totalHoje.toFixed(0)}</div><div class="kpi-sub"><span>${totalSessHoje} sessões</span><span class="arrow-pill neutral">8% da meta diária</span></div></div>
+      <div class="kpi hoje"><div class="kpi-label">Energia</div><div class="kpi-value">${totalKwhHoje.toFixed(0)}<span class="kpi-unit">kWh</span></div><div class="kpi-sub"><span>R$ ${totalKwhHoje>0?(totalHoje/totalKwhHoje).toFixed(2):'—'}/kWh</span></div></div>
+      <div class="kpi hoje"><div class="kpi-label">Sessões</div><div class="kpi-value">${totalSessHoje}</div><div class="kpi-sub"><span>3 OK · 2 cortesia</span></div></div>
+      <div class="kpi hoje"><div class="kpi-label">% Meta Diária</div><div class="kpi-value">${(totalHoje/META_DIARIA*100).toFixed(0)}<span class="kpi-unit">%</span></div><div class="kpi-sub"><span>R$ ${totalHoje.toFixed(0)} de R$ ${META_DIARIA}</span></div></div>
+    </div>
+
+    <div class="card"><h2>Projeção do Mês Fechado</h2>
+      <div class="card-sub">Ritmo atual extrapolado para 30 dias · comparado com mês anterior fechado</div>
+      <div class="split-grid">
+        <div class="split-item"><div class="label">Realizado MTD</div><div class="value">R$ 29.378</div><div class="sub">24 dias</div></div>
+        <div class="split-item"><div class="label">Projeção fechado</div><div class="value" style="color:#c5ff50;">R$ 36.722</div><div class="sub" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">vs mar (R$ 44.200) <span class="arrow-pill down"><span class="ar">↘</span> 17%</span></div></div>
+        <div class="split-item"><div class="label">Necessário p/ meta R$ 46.410</div><div class="value" style="color:#ff8b9f;">+R$ 1.615/dia</div><div class="sub">nos 6 dias restantes</div></div>
+      </div>
+    </div>
+
+    <div class="card hoje-tag">
+      <h2>Hoje · Por Unidade</h2>
+      <div class="card-sub">Receita do dia em curso · <strong style="color:#6fe6f5;">Park Way</strong> via API Move (live), demais unidades atualizadas a cada hora pela rotina (06h-22h)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Unidade</th><th>Plat.</th><th class="right">Receita</th><th class="right">kWh</th><th class="right">Sess.</th><th class="right">Disp.</th><th>Status</th><th>Atualizado</th></tr></thead>
+          <tbody id="tb-hoje"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mês · Desempenho por Unidade</h2>
+      <div class="card-sub">Acumulado 01-24/04 · clique nos cabeçalhos para ordenar (no painel final)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Unidade</th><th>Plat.</th><th class="right">Receita</th><th class="right">kWh</th><th class="right">Sess.</th><th class="right">R$/kWh</th><th class="right">vs Mar</th></tr></thead>
+          <tbody id="tb-mes"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Receita Diária da Rede</h2>
+      <div class="card-sub">6 unidades empilhadas · <span style="color:#f0c040;">— —</span> média atual · <span style="color:#b5f02a;">━</span> meta diária R$ 1.547</div>
+      <div class="chart-container"><canvas id="chart"></canvas></div>
+      <div class="chart-legend" id="legend"></div>
+      <div class="peak-insight" style="margin-top:14px;">
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Park Way puxou 33%</strong> da receita do mês (R$ 9.689 de R$ 29.378). Sozinho rendeu mais que Costa + Madeiro & J. + Cidade Auto somados.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Dia 14/04 (semana santa)</strong> teve queda de 50% — só R$ 825 contra média de R$ 1.224/dia. Padrão sazonal esperado.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Costa zerou no dia 23/04</strong>. Pode ser problema operacional ou só dia fraco. Cruzar com disponibilidade do AC 22kW (60% no mês).</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Madeiro Sia em queda</strong> nos últimos 5 dias (média R$ 257 vs R$ 320 da 1ª quinzena). Investigar se mudou perfil de uso.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <em>Campanhas/promoções</em>: aguardando integração com push do app — quando você logar envios, eu mostro aqui se houve mudança no comportamento pós-envio.</div>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <h2>Usuários do Mês</h2>
+      <div class="card-sub">Base ativa Spott · 5 estações · Park Way (Move) entra quando histórico de feed por usuário acumular</div>
+      <div class="kpi-grid">
+        <div class="kpi mes"><div class="kpi-label">Únicos no mês</div><div class="kpi-value">218</div><div class="kpi-sub"><span>727 sessões total</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Sessões / usuário</div><div class="kpi-value">3.3</div><div class="kpi-sub"><span>média Spott</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Voltaram (≥2x)</div><div class="kpi-value">114</div><div class="kpi-sub"><span>52% da base</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Power users (6+)</div><div class="kpi-value">33</div><div class="kpi-sub"><span>15% · maior recorrência</span></div></div>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:11px;color:#8a9ba8;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Recorrência da base</div>
+        <div style="display:flex;height:28px;border-radius:6px;overflow:hidden;font-size:11px;font-weight:700;">
+          <div style="background:#ff8b9f;width:47.7%;display:flex;align-items:center;justify-content:center;color:#05101a;" title="1x · 104 usuários">1x · 104</div>
+          <div style="background:#f0c040;width:17.4%;display:flex;align-items:center;justify-content:center;color:#05101a;" title="2x · 38 usuários">2x · 38</div>
+          <div style="background:#6fe6f5;width:19.7%;display:flex;align-items:center;justify-content:center;color:#05101a;" title="3-5x · 43 usuários">3-5x · 43</div>
+          <div style="background:#b5f02a;width:15.1%;display:flex;align-items:center;justify-content:center;color:#05101a;" title="6+ · 33 usuários">6+ · 33</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#8a9ba8;margin-top:6px;">
+          <span>48% só 1 visita</span><span>17%</span><span>20%</span><span>15% power</span>
+        </div>
+      </div>
+      <div class="peak-insight" style="margin-top:14px;">
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>48% vieram só 1 vez no mês</strong> (104 pessoas) — foco claro de campanha de "segunda visita" pra converter em recorrente.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>33 power users (6+ visitas)</strong> são 15% da base mas concentram a maior parte das sessões — vale tratamento manual de relacionamento.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> Park Way (Move) ainda não entra aqui — quando feed por usuário acumular histórico, somo automático.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Top 10 Usuários · Concentração de Receita</h2>
+      <div class="card-sub">Quem banca a rede · base Spott mês · <strong style="color:#c5ff50;">25.7% da receita</strong> vem de 10 nomes (de 218)</div>
+      <div class="kpi-grid">
+        <div class="kpi mes"><div class="kpi-label">Top 10 receita</div><div class="kpi-value">R$ 5.514</div><div class="kpi-sub"><span>25.7% do total Spott</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Pareto 20/60</div><div class="kpi-value">60%</div><div class="kpi-sub"><span>top 20% (43 usuários) = R$ 12.803</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Receita média top 10</div><div class="kpi-value">R$ 551</div><div class="kpi-sub"><span>vs R$ 77 dos demais</span></div></div>
+        <div class="kpi mes"><div class="kpi-label">Risco churn top 10</div><div class="kpi-value" style="color:#ff8b9f;">−2.6%</div><div class="kpi-sub"><span>impacto de perder 1 deles</span></div></div>
+      </div>
+      <div class="table-wrap" style="margin-top:14px;">
+        <table>
+          <thead><tr><th>#</th><th>Usuário</th><th class="right">Receita</th><th class="right">Sess.</th><th class="right">Ticket médio</th><th class="right">% do total</th><th class="right">Última visita</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Larissa C. S.</td><td class="right">R$ 1.180,54</td><td class="right">38</td><td class="right">R$ 31,07</td><td class="right">5.5%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(181,240,42,0.18);color:#c5ff50;border:1px solid rgba(181,240,42,0.3);font-size:11px;font-weight:700;">🟢 2d</span></td></tr>
+            <tr><td>2</td><td>Ney J. B.</td><td class="right">R$ 639,05</td><td class="right">17</td><td class="right">R$ 37,59</td><td class="right">3.0%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(181,240,42,0.18);color:#c5ff50;border:1px solid rgba(181,240,42,0.3);font-size:11px;font-weight:700;">🟢 1d</span></td></tr>
+            <tr><td>3</td><td>Gustavo D. M. G.</td><td class="right">R$ 601,70</td><td class="right">15</td><td class="right">R$ 40,11</td><td class="right">2.8%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(181,240,42,0.18);color:#c5ff50;border:1px solid rgba(181,240,42,0.3);font-size:11px;font-weight:700;">🟢 0d</span></td></tr>
+            <tr><td>4</td><td>Renato I.</td><td class="right">R$ 582,58</td><td class="right">13</td><td class="right">R$ 44,81</td><td class="right">2.7%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(181,240,42,0.18);color:#c5ff50;border:1px solid rgba(181,240,42,0.3);font-size:11px;font-weight:700;">🟢 1d</span></td></tr>
+            <tr><td>5</td><td>Luiz P. S. A. C.</td><td class="right">R$ 468,65</td><td class="right">10</td><td class="right">R$ 46,87</td><td class="right">2.2%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(240,192,64,0.18);color:#f0c040;border:1px solid rgba(240,192,64,0.3);font-size:11px;font-weight:700;">🟠 4d</span></td></tr>
+            <tr><td>6</td><td>Denis A. J.</td><td class="right">R$ 456,27</td><td class="right">12</td><td class="right">R$ 38,02</td><td class="right">2.1%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(240,192,64,0.18);color:#f0c040;border:1px solid rgba(240,192,64,0.3);font-size:11px;font-weight:700;">🟠 4d</span></td></tr>
+            <tr><td>7</td><td>Jussara M. D. M. G.</td><td class="right">R$ 419,73</td><td class="right">14</td><td class="right">R$ 29,98</td><td class="right">2.0%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(240,192,64,0.18);color:#f0c040;border:1px solid rgba(240,192,64,0.3);font-size:11px;font-weight:700;">🟠 4d</span></td></tr>
+            <tr><td>8</td><td>Gerson D. D. S. N.</td><td class="right">R$ 409,69</td><td class="right">9</td><td class="right">R$ 45,52</td><td class="right">1.9%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(240,192,64,0.18);color:#f0c040;border:1px solid rgba(240,192,64,0.3);font-size:11px;font-weight:700;">🟠 5d</span></td></tr>
+            <tr><td>9</td><td>Alberto M. N. S.</td><td class="right">R$ 400,47</td><td class="right">4</td><td class="right">R$ 100,12</td><td class="right">1.9%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(255,80,100,0.18);color:#ff8b9f;border:1px solid rgba(255,80,100,0.3);font-size:11px;font-weight:700;">🔴 17d</span></td></tr>
+            <tr><td>10</td><td>Diego D. S. C.</td><td class="right">R$ 361,09</td><td class="right">7</td><td class="right">R$ 51,58</td><td class="right">1.7%</td><td class="right"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:rgba(181,240,42,0.18);color:#c5ff50;border:1px solid rgba(181,240,42,0.3);font-size:11px;font-weight:700;">🟢 2d</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="peak-insight" style="margin-top:14px;">
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Larissa C. S. lidera</strong> com 38 sessões/mês (~1,5/dia) — perfil de motorista de aplicativo ou frota; vale segmentar.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>Pareto confirmado</strong>: 20% dos usuários geram 60% da receita. Programa de fidelidade focado nesses 43 nomes tem ROI muito maior que aquisição em massa.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <strong>🔴 Alberto M. N. S. (#9)</strong> — R$ 400/mês com ticket de R$ 100/sess (o maior da lista) não volta há 17 dias. Gold customer em risco real; ligar antes do mês fechar.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Horário de Pico</h2>
+      <div class="card-sub">Distribuição do mês · comparado com mês anterior (inteligência)</div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="heat-axis" id="heat-axis"></div>
+      <div class="peak-insight">
+        <div class="insight-row"><span class="ai-tag">AI</span> Pico atual <strong>16h (27 sess.)</strong>. Mês anterior pico era às <strong>17h (28 sess.)</strong>. Movimento <strong>antecipou em 1h</strong> — possível efeito de fim-de-tarde mais cedo (saída de trabalho remota?).</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> Janela de oportunidade: <strong>13h-14h</strong> tem queda forte (apenas 7-9 sess) — bom momento pra promo/horário-comercial.</div>
+        <div class="insight-row"><span class="ai-tag">AI</span> <em>Campanhas de mensagem</em>: aguardando dados de envio pra correlacionar — quando você logar mensagens no Spott/app, eu mostro aqui se houve mudança no padrão pós-envio.</div>
+      </div>
+    </div>
+
+    <div class="card"><h2>Saúde dos Carregadores</h2><div class="health-grid" id="health"></div></div>
+
+    <div class="card">
+      <h2>Energia & Demanda</h2>
+      <div class="split-grid">
+        <div class="split-item"><div class="label">Tarifa média</div><div class="value">R$ 1,29</div><div class="sub">Meta R$ 1,85</div></div>
+        <div class="split-item"><div class="label">Pico kW</div><div class="value" style="font-size:14px;font-style:italic;color:#8a9ba8;">a coletar</div><div class="sub">Demand charge</div></div>
+        <div class="split-item"><div class="label">Cortesia</div><div class="value">311,9<span style="font-size:13px;color:#8a9ba8"> kWh</span></div><div class="sub">≈ R$ 405 não faturados</div></div>
+      </div>
+      <div class="courtesy-item" id="court">
+        <div class="courtesy-head"><span style="font-size:12px;">Ver usuários em cortesia (9 sessões · Park Way)</span><span class="arrow">›</span></div>
+        <div class="courtesy-body">
+          <div class="courtesy-list">
+            <table>
+              <thead><tr><th>Usuário</th><th class="right">kWh</th><th class="right">Sess.</th><th class="right">Não faturado</th></tr></thead>
+              <tbody id="cl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Tabela Hoje
+  const tbHoje = document.getElementById('tb-hoje');
+  const sortedHoje = [...UNITS_HOJE].sort((a,b) => b.rev - a.rev);
+  const maxHoje = Math.max(...UNITS_HOJE.map(u=>u.rev), 1);
+  sortedHoje.forEach(u => {
+    const meta = UNITS_META.find(m=>m.short===u.short);
+    const tr = document.createElement('tr');
+    const barW = u.rev > 0 ? Math.round(u.rev/maxHoje*60) : 0;
+    const statusLabel = u.status === 'online' ? 'ATIVA' : u.status === 'idle' ? 'OCIOSA' : 'OFFLINE';
+    const updatedLabel = meta.plat === 'move' ? '<span style="color:#6fe6f5;font-weight:700;">live</span>' : '<span style="color:#566977;font-style:italic;">aguarda 10h</span>';
+    tr.innerHTML = `<td>${meta.name}</td><td><span class="plat ${meta.plat}">${meta.plat==='spott'?'Spott':'Move'}</span></td><td class="right"><span class="bar hoje" style="width:${barW}px"></span>R$ ${u.rev.toFixed(2)}</td><td class="right">${u.kwh.toFixed(0)}</td><td class="right">${u.sess}</td><td class="right">${u.disp}%</td><td><span class="status-tag ${u.status}">● ${statusLabel}</span></td><td style="font-size:10px;">${updatedLabel}</td>`;
+    tbHoje.appendChild(tr);
+  });
+
+  // Tabela Mês
+  const tbMes = document.getElementById('tb-mes');
+  const maxMes = Math.max(...UNITS_MES.map(u=>u.rev));
+  UNITS_MES.forEach(u => {
+    const meta = UNITS_META.find(m=>m.short===u.short);
+    const tr = document.createElement('tr');
+    const barW = Math.round(u.rev/maxMes*60);
+    const tarifa = (u.rev/u.kwh).toFixed(2).replace('.',',');
+    let varB = '<span style="color:#566977;">—</span>';
+    if (u.variacao !== null) { const cls = u.variacao>=0?'up':'down', ar = u.variacao>=0?'↗':'↘'; varB = `<span class="arrow-pill ${cls}"><span class="ar">${ar}</span> ${Math.abs(u.variacao).toFixed(0)}%</span>`; }
+    tr.innerHTML = `<td>${meta.name}</td><td><span class="plat ${meta.plat}">${meta.plat==='spott'?'Spott':'Move'}</span></td><td class="right"><span class="bar" style="width:${barW}px"></span>R$ ${u.rev.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td class="right">${u.kwh.toLocaleString('pt-BR')}</td><td class="right">${u.sess}</td><td class="right">R$ ${tarifa}</td><td class="right">${varB}</td>`;
+    tbMes.appendChild(tr);
+  });
+
+  // Chart
+  if (chartInstance) chartInstance.destroy();
+  const ctx = document.getElementById('chart').getContext('2d');
+  const datasets = UNITS_META.slice().reverse().map(u => ({ label: u.short, data: DAILY[u.short]||[], backgroundColor: u.color, stack:'rede', type:'bar', borderRadius:2 }));
+  const media = 29377.55/24;
+  datasets.push({ label:`Média atual R$ ${Math.round(media)}/dia`, data:Array(24).fill(media), type:'line', borderColor:'#f0c040', borderWidth:2, borderDash:[6,4], pointRadius:0, fill:false });
+  datasets.push({ label:`Meta diária R$ ${META_DIARIA}`, data:Array(24).fill(META_DIARIA), type:'line', borderColor:'#b5f02a', borderWidth:2, pointRadius:0, fill:false });
+  chartInstance = new Chart(ctx, { data:{labels:DAILY_LABELS,datasets}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#8a9ba8',font:{size:10}}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(138,155,168,0.08)'},ticks:{color:'#8a9ba8',callback:v=>'R$ '+v,font:{size:10}}}}}});
+  const lg = document.getElementById('legend'); lg.innerHTML='';
+  UNITS_META.forEach(u => lg.insertAdjacentHTML('beforeend', `<span class="item"><span class="sw" style="background:${u.color}"></span> ${u.short}</span>`));
+  lg.insertAdjacentHTML('beforeend', `<span class="item"><span class="ln" style="background:transparent;border-top:2px dashed #f0c040;"></span> Média atual R$ ${Math.round(media)}/dia</span>`);
+  lg.insertAdjacentHTML('beforeend', `<span class="item"><span class="ln" style="background:#b5f02a;"></span> Meta diária R$ ${META_DIARIA}</span>`);
+
+  // Heatmap
+  renderHeatmap('heatmap','heat-axis',HOUR_MES);
+
+  // Health
+  const hg = document.getElementById('health');
+  CHARGERS.forEach(c => {
+    let dc='online',pc=''; if(c.disp!==null){if(c.disp<40){dc='crit';pc='warn';}else if(c.disp<85){dc='warn';pc='warn';}}
+    const div = document.createElement('div'); div.className='charger';
+    div.innerHTML = `<div class="status-dot ${dc}"></div><div class="charger-info"><div class="charger-name">${c.name}</div><div class="charger-meta">${c.power} · ${c.hb}</div></div><div class="disp-bar"><div class="pct ${pc}">${c.disp!==null?c.disp+'%':'—'}</div></div>`;
+    hg.appendChild(div);
+  });
+
+  // Cortesia
+  const cl = document.getElementById('cl');
+  COURTESY_MES.forEach(c => { const r = document.createElement('tr'); r.innerHTML = `<td>${c.name}</td><td class="right">${c.kwh.toFixed(1)}</td><td class="right">${c.n}</td><td class="right">R$ ${c.valor.toFixed(2)}</td>`; cl.appendChild(r); });
+}
+
+function renderHeatmap(elId, axisId, HOUR) {
+  const heatEl = document.getElementById(elId); heatEl.innerHTML = '';
+  const max = Math.max(...HOUR);
+  HOUR.forEach((c,h) => {
+    const cell = document.createElement('div'); cell.className='heat-cell';
+    if(max===0){cell.style.background='rgba(138,155,168,0.08)';}
+    else{const i=c/max;cell.style.background=i===0?'rgba(138,155,168,0.08)':`rgba(${5+i*175},${16+i*224},${26+i*16},${0.2+i*0.8})`;}
+    cell.title = `${String(h).padStart(2,'0')}h — ${c} sess.`;
+    heatEl.appendChild(cell);
+  });
+  const ax = document.getElementById(axisId); ax.innerHTML = '';
+  for(let h=0;h<24;h++){const l=document.createElement('div');l.textContent=h%3===0?String(h).padStart(2,'0'):'';ax.appendChild(l);}
+}
+
+// ==== ANO
+function renderAno() {
+  const totalAno = MONTHLY_TOTAL.reduce((a,m)=>a+m.rev,0);
+  const dyn = document.getElementById('dynamic');
+  dyn.innerHTML = `
+    <div class="card" style="background:rgba(240,192,64,0.08);border-color:rgba(240,192,64,0.3);">
+      <div style="font-size:13px;color:#ffe9b8;line-height:1.5;">⚠ <strong>Ano · 5 meses (dez/25 a abr/26):</strong> alguns dados são estimativas <span class="placeholder-tag">PLACEHOLDER</span>. A rotina vai preencher quando puxar histórico Move e Spott.</div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi mes"><div class="kpi-label">Faturamento Acumulado</div><div class="kpi-value">R$ ${(totalAno/1000).toFixed(1)}k</div><div class="kpi-sub"><span>5 meses · rede</span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Melhor Mês</div><div class="kpi-value">Mar/26</div><div class="kpi-sub"><span>R$ 44.200 <span class="placeholder-tag">est.</span></span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Crescimento Total</div><div class="kpi-value" style="color:#c5ff50;">+133%</div><div class="kpi-sub"><span>dez/25 → abr/26</span></div></div>
+      <div class="kpi mes"><div class="kpi-label">Disp. Média Anual</div><div class="kpi-value">88,9<span class="kpi-unit">%</span></div><div class="kpi-sub"><span>5 meses</span></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Faturamento Mensal — Por Estação</h2>
+      <div class="card-sub">Empilhado por unidade · linha azul = meta mensal R$ 46.410 · cada cor = uma estação</div>
+      <div class="chart-container"><canvas id="chartA"></canvas></div>
+      <div class="chart-legend" id="legendA"></div>
+    </div>
+
+    <div class="card">
+      <h2>Crescimento Mês a Mês — Rede</h2>
+      <div class="card-sub">Soma das 6 unidades · variação vs mês anterior</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mês</th><th class="right">Receita Rede</th><th class="right">vs anterior</th></tr></thead>
+          <tbody id="tb-mom"></tbody>
+        </table>
+      </div>
+      <div style="font-size:11px;color:#8a9ba8;margin-top:12px;">Crescimento por estação:</div>
+      <div class="table-wrap" style="margin-top:6px;">
+        <table>
+          <thead><tr><th>Unidade</th><th class="right">Dez/25</th><th class="right">Jan/26</th><th class="right">Fev/26</th><th class="right">Mar/26</th><th class="right">Abr/26</th></tr></thead>
+          <tbody id="tb-unit-mom"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ranking de Unidades — 5 meses</h2>
+      <div class="card-sub" style="color:#f0c040;">Acumulado · valores estimados <span class="placeholder-tag">PLACEHOLDER</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Unidade</th><th class="right">Receita Anual</th><th class="right">% da rede</th></tr></thead>
+          <tbody id="tb-rank"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Disponibilidade Média Mensal</h2>
+      <div class="card-sub">Saúde estrutural da rede ao longo do tempo</div>
+      <div class="chart-container" style="height:200px;"><canvas id="chartUp"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Eficiência R$/kWh por Unidade — 5 meses</h2>
+      <div class="card-sub" style="color:#f0c040;">Quem cobra caro · quem está abaixo da meta R$ 1,85/kWh — <span class="placeholder-tag">PLACEHOLDER</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Unidade</th><th class="right">R$/kWh anual</th><th class="right">vs meta R$ 1,85</th></tr></thead>
+          <tbody>
+            <tr><td>Costa</td><td class="right">R$ 1,93</td><td class="right"><span class="arrow-pill up">↗ 4%</span></td></tr>
+            <tr><td>Cidade Auto</td><td class="right">R$ 1,33</td><td class="right"><span class="arrow-pill down">↘ 28%</span></td></tr>
+            <tr><td>Park Way</td><td class="right">R$ 1,30</td><td class="right"><span class="arrow-pill down">↘ 30%</span></td></tr>
+            <tr><td>Madeiro & J.</td><td class="right">R$ 1,28</td><td class="right"><span class="arrow-pill down">↘ 31%</span></td></tr>
+            <tr><td>Madeiro Sia</td><td class="right">R$ 1,11</td><td class="right"><span class="arrow-pill down">↘ 40%</span></td></tr>
+            <tr><td>Mamute</td><td class="right">R$ 0,99</td><td class="right"><span class="arrow-pill down">↘ 46%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  // Chart Mensal stacked por unidade
+  if (chartInstance) chartInstance.destroy();
+  const ctxA = document.getElementById('chartA').getContext('2d');
+  const labels = Object.keys(MONTHLY_REV_BY_UNIT);
+  const datasetsA = UNITS_META.slice().reverse().map(u => ({ label: u.short, data: labels.map(m => MONTHLY_REV_BY_UNIT[m][u.short]||0), backgroundColor: u.color, stack:'ano', type:'bar', borderRadius:2 }));
+  datasetsA.push({ label:'Meta R$ 46.410', data: Array(5).fill(46410), type:'line', borderColor:'#6fe6f5', borderWidth:2, pointRadius:0, fill:false });
+  chartInstance = new Chart(ctxA, { data:{labels,datasets:datasetsA}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#8a9ba8',font:{size:10}}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(138,155,168,0.08)'},ticks:{color:'#8a9ba8',callback:v=>'R$ '+v.toLocaleString('pt-BR'),font:{size:10}}}}}});
+  const lg = document.getElementById('legendA'); lg.innerHTML='';
+  UNITS_META.forEach(u => lg.insertAdjacentHTML('beforeend', `<span class="item"><span class="sw" style="background:${u.color}"></span> ${u.short}</span>`));
+  lg.insertAdjacentHTML('beforeend', `<span class="item"><span class="ln" style="background:#6fe6f5;"></span> Meta mensal</span>`);
+
+  // Tabela MoM rede
+  const tbMom = document.getElementById('tb-mom');
+  let prev = null;
+  MONTHLY_TOTAL.forEach(m => {
+    const tr = document.createElement('tr');
+    let varTxt = '—';
+    if (prev !== null) { const v = (m.rev - prev) / prev * 100; const cls = v>=0?'up':'down', ar = v>=0?'↗':'↘'; varTxt = `<span class="arrow-pill ${cls}"><span class="ar">${ar}</span> ${Math.abs(v).toFixed(0)}%</span>`; }
+    tr.innerHTML = `<td>${m.mes}</td><td class="right">R$ ${m.rev.toLocaleString('pt-BR')}</td><td class="right">${varTxt}</td>`;
+    prev = m.rev;
+    tbMom.appendChild(tr);
+  });
+
+  // Tabela MoM por unidade
+  const tbUnitMom = document.getElementById('tb-unit-mom');
+  UNITS_META.forEach(u => {
+    const tr = document.createElement('tr');
+    let cells = `<td>${u.short}</td>`;
+    Object.keys(MONTHLY_REV_BY_UNIT).forEach(mes => {
+      cells += `<td class="right">R$ ${(MONTHLY_REV_BY_UNIT[mes][u.short]||0).toLocaleString('pt-BR')}</td>`;
+    });
+    tr.innerHTML = cells;
+    tbUnitMom.appendChild(tr);
+  });
+
+  // Ranking
+  const tbRank = document.getElementById('tb-rank');
+  const ranking = UNITS_META.map(u => ({short:u.short, name:u.name, total: Object.keys(MONTHLY_REV_BY_UNIT).reduce((a,m)=>a+(MONTHLY_REV_BY_UNIT[m][u.short]||0),0)})).sort((a,b)=>b.total-a.total);
+  ranking.forEach(r => {
+    const pct = (r.total/totalAno*100).toFixed(1);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.name}</td><td class="right">R$ ${r.total.toLocaleString('pt-BR')}</td><td class="right">${pct}%</td>`;
+    tbRank.appendChild(tr);
+  });
+
+  // Chart disp
+  const ctxUp = document.getElementById('chartUp').getContext('2d');
+  new Chart(ctxUp, { type:'line', data:{labels:['Dez/25','Jan/26','Fev/26','Mar/26','Abr/26'],datasets:[{label:'Disp %',data:[91,88,92,85,88.7],borderColor:'#b5f02a',backgroundColor:'rgba(181,240,42,0.1)',borderWidth:2,pointRadius:4,fill:true,tension:0.3}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8a9ba8',font:{size:10}}},y:{min:80,max:100,grid:{color:'rgba(138,155,168,0.08)'},ticks:{color:'#8a9ba8',callback:v=>v+'%',font:{size:10}}}}}});
+}
+
+// Tab clicks
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const p = t.dataset.period;
+    const lbl = document.getElementById('period-label');
+    if (p === 'painel') { lbl.textContent = 'Painel · 25/04/2026 09:30'; renderAlerts(true); renderPainel(); }
+    if (p === 'ano')    { lbl.textContent = 'Ano · dez/25 a abr/26 (5 meses)'; renderAlerts(false); renderAno(); }
+  });
+});
+
+document.addEventListener('click', e => { const h = e.target.closest('.courtesy-head'); if(h){const i=h.closest('.courtesy-item'); if(i)i.classList.toggle('open');} });
+
+renderAlerts(true);
+renderPainel();
+</script>
+</body>
+</html>
