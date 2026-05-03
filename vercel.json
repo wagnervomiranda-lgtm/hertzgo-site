@@ -2,14 +2,14 @@
   "outputDirectory": ".",
   "builds": [
     {
-      "src": "HertzGo_v5_responsive.html",
+      "src": "HertzGo_v5_CORRIGIDO.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/HertzGo_v5_responsive.html"
+      "dest": "/HertzGo_v5_CORRIGIDO.html"
     }
   ]
 }
