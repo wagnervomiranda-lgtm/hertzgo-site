@@ -4,7 +4,7 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/HertzGo_FINAL_CORRETO.html"
+      "dest": "/HertzGo_FINAL.html"
     }
   ]
 }
