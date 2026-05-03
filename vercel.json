@@ -1,8 +1,10 @@
 {
-  "redirects": [
+  "buildCommand": "echo 'static'",
+  "outputDirectory": ".",
+  "routes": [
     {
-      "source": "/",
-      "destination": "/HertzGo_v5_CORRIGIDO.html"
+      "src": "/",
+      "dest": "/HertzGo_v5_CORRIGIDO.html"
     }
   ]
 }
