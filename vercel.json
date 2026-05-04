@@ -1,10 +1,10 @@
 {
-  "buildCommand": "echo 'static'",
-  "outputDirectory": ".",
-  "routes": [
+  "headers": [
     {
-      "src": "/",
-      "dest": "/HertzGo_v6.html"
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
     }
   ]
 }
