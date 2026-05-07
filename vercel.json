@@ -1,18 +1,33 @@
 {
-  "outputDirectory": ".",
+  "cleanUrls": false,
+  "trailingSlash": false,
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/components/(.*)\\.jsx",
+      "headers": [
+        { "key": "Content-Type", "value": "text/babel; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.(jpeg|jpg)",
+      "headers": [
+        { "key": "Content-Type", "value": "image/jpeg" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.png",
+      "headers": [
+        { "key": "Content-Type", "value": "image/png" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(html|css)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     }
-  ],
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/aeroporto", "dest": "/aeroporto.html" },
-    { "src": "/investidores", "dest": "/investidores.html" },
-    { "src": "/painel", "dest": "/painel-v7-final-PUBLICAR.html" },
-    { "src": "/supremo", "dest": "/supremus.html" }
   ]
 }

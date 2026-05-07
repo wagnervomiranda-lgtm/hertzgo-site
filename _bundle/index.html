@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HertzGo — Recarga Rápida DC para Veículos Elétricos</title>
+<meta name="description" content="Rede de eletropostos DC para veículos elétricos em Brasília — 5 estações ativas, app HertzGo para motoristas, plataforma Vision para gestão e Academy para capacitação." />
+
+<link rel="icon" type="image/jpeg" href="../assets/logo-hertzgo.jpeg" />
+<link rel="apple-touch-icon" href="../assets/logo-hertzgo.jpeg" />
+
+<!-- Resources referenced as strings in JSX/JS — lifted for the bundler -->
+<meta name="ext-resource-dependency" content="../assets/logo-hertzgo.jpeg"        data-resource-id="logo" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-01.jpeg"   data-resource-id="p01" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-04.jpeg"   data-resource-id="p04" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-05.jpeg"   data-resource-id="p05" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-06.jpeg"   data-resource-id="p06" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-07.jpeg"   data-resource-id="p07" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-08.jpeg"   data-resource-id="p08" />
+<meta name="ext-resource-dependency" content="../assets/photos/station-render.jpeg" data-resource-id="pRender" />
+<meta name="ext-resource-dependency" content="../assets/vision/dashboard-01.png"  data-resource-id="vd01" />
+<meta name="ext-resource-dependency" content="../assets/vision/dashboard-02.png"  data-resource-id="vd02" />
+<meta name="ext-resource-dependency" content="../assets/vision/dashboard-03.png"  data-resource-id="vd03" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+<template id="__bundler_thumbnail" data-bg-color="#050B14">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="bg" cx="50%" cy="50%" r="60%">
+        <stop offset="0%" stop-color="#0a2740"/>
+        <stop offset="100%" stop-color="#050B14"/>
+      </radialGradient>
+      <linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#22E0F2"/>
+        <stop offset="100%" stop-color="#03A4BD"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#bg)"/>
+    <circle cx="600" cy="400" r="220" fill="none" stroke="#22E0F2" stroke-width="2" opacity="0.25"/>
+    <circle cx="600" cy="400" r="160" fill="none" stroke="#22E0F2" stroke-width="2" opacity="0.45"/>
+    <path d="M620 280 L520 430 L590 430 L560 540 L680 380 L600 380 Z" fill="url(#bolt)"/>
+    <text x="600" y="640" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="72" fill="#E6F0FF" letter-spacing="-2">HertzGo</text>
+    <text x="600" y="690" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="20" fill="#22E0F2" letter-spacing="6">// LOADING</text>
+  </svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="components/Logo.jsx"></script>
+<script type="text/babel" src="../components/HeroBg.jsx"></script>
+<script type="text/babel" src="../components/MapSection.jsx"></script>
+<script type="text/babel" src="components/Sections.jsx"></script>
+<script type="text/babel" src="components/Sections2.jsx"></script>
+<script type="text/babel" src="components/Sections3.jsx"></script>
+<script type="text/babel" src="../components/App.jsx"></script>
+
+</body>
+</html>
