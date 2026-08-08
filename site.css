@@ -91,13 +91,13 @@ img{display:block;max-width:100%}
   position:absolute;inset:0;z-index:1;
   background-image:url('/assets/station-parkway.png');
   background-size:cover;background-position:center;
-  opacity:0.85;
-  filter:saturate(1.25) contrast(1.1) brightness(1.05);
+  opacity:0.55;
+  filter:saturate(0.95) contrast(0.85) brightness(1.05);
   animation:heroBreath 9s ease-in-out infinite;
 }
 @keyframes heroBreath{
-  0%,100%{transform:scale(1.04);filter:saturate(1.25) contrast(1.1) brightness(1)}
-  50%{transform:scale(1.10);filter:saturate(1.4) contrast(1.15) brightness(1.12)}
+  0%,100%{transform:scale(1.04);filter:saturate(0.95) contrast(0.85) brightness(1)}
+  50%{transform:scale(1.10);filter:saturate(1.05) contrast(0.90) brightness(1.08)}
 }
 .hero-bg::before{
   content:"";position:absolute;inset:0;z-index:3;
