@@ -3,12 +3,20 @@ const Gallery = () => {
   // Absolute paths from site root — work regardless of base URL on Vercel
   const photos = [
     "/assets/photos/station-01.jpeg",
+    "/assets/photos/station-09.jpeg",
     "/assets/photos/station-08.jpeg",
     "/assets/photos/station-render.jpeg",
     "/assets/photos/station-04.jpeg",
+    "/assets/photos/station-12.jpeg",
     "/assets/photos/station-07.jpeg",
+    "/assets/photos/station-10.jpeg",
+    "/assets/photos/station-11.jpeg",
     "/assets/photos/station-05.jpeg",
+    "/assets/photos/station-13.jpeg",
     "/assets/photos/station-06.jpeg",
+    "/assets/photos/station-mascot.jpeg",
+    "/assets/photos/station-02.jpeg",
+    "/assets/photos/station-03.jpeg",
   ];
   const handleErr = (e) => {
     // If absolute path fails (e.g. local file:// preview), retry with relative
